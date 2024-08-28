@@ -1,0 +1,16 @@
+#custom_dynamic_form .workflow-form-item-required::before {
+  display: none !important;
+}
+
+#custom_dynamic_form .workflow-form-item-required::after {
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: "*";
+  visibility: visible;
+}
+
+#custom_dynamic_form .workflow-form-item-label {
+  font-weight: 600;
+}
