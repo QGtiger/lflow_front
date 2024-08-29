@@ -9,6 +9,9 @@ import {
 import "./index.css";
 import CommonLayout from "./components/CommonLayout";
 import RequireAuth from "./components/RequireAuth";
+import { layoutMap, notFoundMap, routeMap, settingsMap } from "./glob";
+
+type ReactFunctionComponent = (props: any) => JSX.Element | null;
 
 const handlePath = (path: string) => {
   return path.replace(/\[(.*?)\]/g, ":$1");
@@ -16,51 +19,24 @@ const handlePath = (path: string) => {
 
 // 生成组件
 function generateComp(
-  moduleComp: {
-    default: any;
-    settings?: {
-      login?: boolean;
-    };
-  } = {
-    default: CommonLayout,
-  }
+  ModuleComp: ReactFunctionComponent = CommonLayout,
+  settingsConfig: PageSettings = {}
 ) {
-  const { settings = {} } = moduleComp;
-  if (settings.login) {
+  if (settingsConfig.login) {
     return () => {
       console.log("emmmmm");
-      const M = moduleComp.default || CommonLayout;
       return (
         <RequireAuth>
-          <M></M>
+          <ModuleComp></ModuleComp>
         </RequireAuth>
       );
     };
   }
-  return moduleComp.default || CommonLayout;
+  return ModuleComp;
 }
 
 function initRoutes() {
-  const routeMap: Record<string, { default: any }> = import.meta.glob(
-    "./pages/**/index.tsx",
-    {
-      eager: true,
-    }
-  );
-
-  const layoutMap: Record<string, { default: any }> = import.meta.glob(
-    "./pages/**/layout.tsx",
-    {
-      eager: true,
-    }
-  );
-
-  const notFoundMap: Record<string, { default: any }> = import.meta.glob(
-    "./pages/**/notFound.tsx",
-    {
-      eager: true,
-    }
-  );
+  console.log(settingsMap);
 
   const resultRoutes: RouteObject[] = [];
 
@@ -80,9 +56,14 @@ function initRoutes() {
     const pageUrl = `${relativePath}/index.tsx`;
     const layoutUrl = `${relativePath}/layout.tsx`;
     const notFoundUrl = `${relativePath}/notFound.tsx`;
+    const settingsUrl = `${relativePath}/settings.tsx`;
 
-    const LayoutComp = generateComp(layoutMap[layoutUrl]);
-    const PageComp = generateComp(routeMap[pageUrl]);
+    const LayoutComp = generateComp(layoutMap[layoutUrl]?.default);
+    // 页面 settings
+    const PageComp = generateComp(
+      routeMap[pageUrl]?.default,
+      settingsMap[settingsUrl]?.default
+    );
     const NotFoundComp = notFoundMap[notFoundUrl]?.default;
 
     let route = routes.find((item) => item.path === handlePath(path));

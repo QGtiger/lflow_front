@@ -2,6 +2,7 @@ import { message, Modal, notification } from "antd";
 import { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLocation, useOutlet } from "react-router-dom";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import CommonErrorBoundaryPanel from "@/components/CommonErrorBoundaryPanel";
 import { MessageRef } from "@/utils/customMessage";
@@ -47,6 +48,7 @@ export default function Layout() {
           <div className="root-wrapper">{outlet}</div>
         </Suspense>
       </ErrorBoundary>
+      <ReactQueryDevtools />
       {contextHolder}
       {messageContextHolder}
       {notificationContextHolder}
