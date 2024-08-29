@@ -1,9 +1,4 @@
-import {
-  ChromeFilled,
-  CrownFilled,
-  SmileFilled,
-  TabletFilled,
-} from "@ant-design/icons";
+import { CrownFilled, SmileFilled } from "@ant-design/icons";
 
 const myRoute = {
   routes: [
