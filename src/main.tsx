@@ -1,26 +1,39 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConfigProvider } from 'antd';
-import ReactDOM from 'react-dom/client';
-import { RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
-import './index.css';
-import CommonLayout from './components/CommonLayout';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConfigProvider } from "antd";
+import ReactDOM from "react-dom/client";
+import {
+  RouteObject,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
+import "./index.css";
+import CommonLayout from "./components/CommonLayout";
 
 const handlePath = (path: string) => {
-  return path.replace(/\[(.*?)\]/g, ':$1');
+  return path.replace(/\[(.*?)\]/g, ":$1");
 };
 
 function initRoutes() {
-  const routeMap: Record<string, {default: any}> = import.meta.glob('./pages/**/index.tsx', {
-    eager: true,
-  });
+  const routeMap: Record<string, { default: any }> = import.meta.glob(
+    "./pages/**/index.tsx",
+    {
+      eager: true,
+    }
+  );
 
-  const layoutMap: Record<string, {default: any}> = import.meta.glob('./pages/**/layout.tsx', {
-    eager: true,
-  });
+  const layoutMap: Record<string, { default: any }> = import.meta.glob(
+    "./pages/**/layout.tsx",
+    {
+      eager: true,
+    }
+  );
 
-  const notFoundMap: Record<string, {default: any}> = import.meta.glob('./pages/**/notFound.tsx', {
-    eager: true,
-  });
+  const notFoundMap: Record<string, { default: any }> = import.meta.glob(
+    "./pages/**/notFound.tsx",
+    {
+      eager: true,
+    }
+  );
 
   const resultRoutes: RouteObject[] = [];
 
@@ -32,7 +45,11 @@ function initRoutes() {
    * @param routes 路由集合
    * @returns
    */
-  function createRoute(relativePath: string, path: string, routes:RouteObject[]  = []) {
+  function createRoute(
+    relativePath: string,
+    path: string,
+    routes: RouteObject[] = []
+  ) {
     const pageUrl = `${relativePath}/index.tsx`;
     const layoutUrl = `${relativePath}/layout.tsx`;
     const notFoundUrl = `${relativePath}/notFound.tsx`;
@@ -57,7 +74,7 @@ function initRoutes() {
       // 路由器404
       if (NotFoundComp) {
         route.children!.push({
-          path: '*',
+          path: "*",
           element: <NotFoundComp />,
         });
       }
@@ -67,20 +84,24 @@ function initRoutes() {
     return route;
   }
 
-  const rootRoute = createRoute(`./pages`, '', resultRoutes);
+  const rootRoute = createRoute(`./pages`, "", resultRoutes);
 
   function dfs(prePath: string, paths: string[], result: RouteObject[] = []) {
     if (!paths.length) return result;
-    const path = paths.shift() || '';
+    const path = paths.shift() || "";
 
-    dfs(`${prePath}/${path}`, paths, createRoute(`${prePath}/${path}`, path, result).children);
+    dfs(
+      `${prePath}/${path}`,
+      paths,
+      createRoute(`${prePath}/${path}`, path, result).children
+    );
     return result;
   }
 
   Object.keys(routeMap)
-    .filter((key) => !key.includes('components'))
+    .filter((key) => !key.includes("components"))
     .forEach((key) => {
-      dfs('./pages', key.split('/').slice(2, -1), rootRoute.children);
+      dfs("./pages", key.split("/").slice(2, -1), rootRoute.children);
     });
 
   return resultRoutes;
@@ -89,16 +110,14 @@ function initRoutes() {
 const routes = initRoutes();
 
 const router = createBrowserRouter(routes);
-console.log(routes)
+console.log(routes);
 
 const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <ConfigProvider
-      prefixCls='lflow'
-    >
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ConfigProvider>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <ConfigProvider prefixCls="lflow">
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </ConfigProvider>
 );

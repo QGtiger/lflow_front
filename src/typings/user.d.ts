@@ -4,14 +4,6 @@ interface UserInfo {
   username: string;
 
   email: string;
-
-  isAdmin: boolean;
-
-  createTime: number;
-
-  roles: string[];
-
-  permissions: string[];
 }
 
 interface UserLoginRes {

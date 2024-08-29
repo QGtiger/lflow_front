@@ -24,8 +24,8 @@ export default function EmailCaptcha(
   const startCountDown = async () => {
     try {
       viewModel.isCountDown = true;
-      await sendCaptcha();
       viewModel.countDownNum = countDown;
+      await sendCaptcha();
       timerRef.current = setInterval(() => {
         viewModel.countDownNum -= 1;
         if (viewModel.countDownNum <= 0) {
@@ -34,6 +34,7 @@ export default function EmailCaptcha(
         }
       }, 1000);
     } catch (error) {
+      console.error(error);
       viewModel.isCountDown = false;
     }
   };
@@ -49,9 +50,9 @@ export default function EmailCaptcha(
         type="primary"
         className="w-[200px]"
         onClick={startCountDown}
-        loading={viewModel.isCountDown}
+        disabled={viewModel.isCountDown}
       >
-        {viewModel.isCountDown
+        {viewModel.isCountDown && viewModel.countDownNum !== countDown
           ? `${viewModel.countDownNum}s重新获取`
           : "获取验证码"}
       </Button>

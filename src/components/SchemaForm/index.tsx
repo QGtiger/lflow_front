@@ -54,6 +54,7 @@ export const SchemaForm = forwardRef<FormInstance, SchemaProps>(
           formProps.onValuesChange?.(c, v);
           setFormValue(() => v);
         }}
+        validateTrigger={["onBlur", "onSubmit"]}
       >
         {cursorFormItem && <RecursionFormItem formItemState={cursorFormItem} />}
       </Form>

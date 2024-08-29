@@ -4,10 +4,19 @@ import { useRef } from "react";
 
 import { SchemaForm } from "@/components/SchemaForm";
 import useRouter from "@/hooks/useRouter";
+import { login } from "./api";
+import { useMutation } from "@tanstack/react-query";
+import useUserModel from "@/hooks/user/useUserModel";
+import { showLoginMessage } from "@/utils/message";
 
 export default function Login() {
   const formRef = useRef<FormInstance>(null);
   const { nav } = useRouter();
+  const { userLogin } = useUserModel();
+
+  const { mutateAsync: loginMutateAsync, isPending } = useMutation({
+    mutationFn: login,
+  });
 
   return (
     <div className="flex h-[100vh] items-center justify-center">
@@ -36,12 +45,16 @@ export default function Login() {
           ]}
         />
         <Button
+          loading={isPending}
           type="primary"
           block
           size="large"
           onClick={() => {
             return formRef.current?.validateFields().then(async (values) => {
-              console.log("登录", values);
+              const loginRes = await loginMutateAsync(values);
+              userLogin(loginRes);
+              nav("/", { replace: true });
+              showLoginMessage(loginRes.userInfo);
             });
           }}
         >
