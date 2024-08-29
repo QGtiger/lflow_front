@@ -1,7 +1,7 @@
 import { message, Modal, notification } from "antd";
-import { Suspense, useEffect } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useLocation, useOutlet } from "react-router-dom";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import CommonErrorBoundaryPanel from "@/components/CommonErrorBoundaryPanel";
@@ -10,6 +10,12 @@ import { ModalRef } from "@/utils/customModal";
 import { NotificationRef } from "@/utils/customNotification";
 
 import { Spin } from "antd";
+import {
+  ProLayout,
+  ProSettings,
+  SettingDrawer,
+} from "@ant-design/pro-components";
+import { GlobalContext } from "@/context/GlobalContext";
 
 function FullScreenSpin() {
   return (
@@ -19,12 +25,88 @@ function FullScreenSpin() {
   );
 }
 
+function OutletWrapper() {
+  const outlet = useOutlet();
+  const { pathname } = useLocation();
+  const { routesMenu } = useContext(GlobalContext);
+  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
+    fixSiderbar: true,
+  });
+  const nav = useNavigate();
+
+  // 登录注册页面不需要全局布局
+  if (pathname === "/login" || pathname === "/register") {
+    return <div>{outlet}</div>;
+  }
+
+  return (
+    <div>
+      <ProLayout
+        route={{
+          routes: routesMenu,
+        }}
+        menuFooterRender={(props) => {
+          return (
+            <a
+              style={{
+                lineHeight: "48rpx",
+                display: "flex",
+                height: 48,
+                color: "rgba(255, 255, 255, 0.65)",
+                alignItems: "center",
+              }}
+              href="https://preview.pro.ant.design/dashboard/analysis"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                alt="pro-logo"
+                src="https://procomponents.ant.design/favicon.ico"
+                style={{
+                  width: 16,
+                  height: 16,
+                  margin: "0 16px",
+                  marginInlineEnd: 10,
+                }}
+              />
+              {!props?.collapsed && "Preview Pro"}
+            </a>
+          );
+        }}
+        onMenuHeaderClick={(e) => console.log(e)}
+        menuItemRender={(item, dom) => (
+          <a
+            onClick={() => {
+              nav(item.path || "/");
+            }}
+          >
+            {dom}
+          </a>
+        )}
+        {...settings}
+      >
+        {outlet}
+      </ProLayout>
+      <SettingDrawer
+        pathname={pathname}
+        getContainer={() => document.getElementById("test-pro-layout")}
+        settings={settings}
+        onSettingChange={(changeSetting) => {
+          setSetting(changeSetting);
+        }}
+        disableUrlParams
+      />
+    </div>
+  );
+
+  return <div className="root-wrapper">11{outlet}</div>;
+}
+
 export default function Layout() {
   const [modal, contextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
   const [notificationApi, notificationContextHolder] =
     notification.useNotification();
-  const outlet = useOutlet();
   const location = useLocation();
 
   useEffect(() => {
@@ -45,7 +127,7 @@ export default function Layout() {
     <>
       <ErrorBoundary FallbackComponent={CommonErrorBoundaryPanel}>
         <Suspense fallback={<FullScreenSpin />}>
-          <div className="root-wrapper">{outlet}</div>
+          <OutletWrapper />
         </Suspense>
       </ErrorBoundary>
       <ReactQueryDevtools />

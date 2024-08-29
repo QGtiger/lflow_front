@@ -10,6 +10,9 @@ import "./index.css";
 import CommonLayout from "./components/CommonLayout";
 import RequireAuth from "./components/RequireAuth";
 import { layoutMap, notFoundMap, routeMap, settingsMap } from "./glob";
+import "./generateMenu";
+import { generateFolderMenu } from "./generateMenu";
+import { GlobalContext } from "./context/GlobalContext";
 
 type ReactFunctionComponent = (props: any) => JSX.Element | null;
 
@@ -20,6 +23,7 @@ const handlePath = (path: string) => {
 // 生成组件
 function generateComp(
   ModuleComp: ReactFunctionComponent = CommonLayout,
+  // @ts-expect-error settingsConfig
   settingsConfig: PageSettings = {}
 ) {
   if (settingsConfig.login) {
@@ -36,8 +40,6 @@ function generateComp(
 }
 
 function initRoutes() {
-  console.log(settingsMap);
-
   const resultRoutes: RouteObject[] = [];
 
   /**
@@ -119,13 +121,21 @@ const routes = initRoutes();
 
 const router = createBrowserRouter(routes);
 console.log(routes);
+const menu = generateFolderMenu();
+console.log("menu", menu);
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ConfigProvider prefixCls="lflow">
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </ConfigProvider>
+  <GlobalContext.Provider
+    value={{
+      routesMenu: menu,
+    }}
+  >
+    <ConfigProvider prefixCls="lflow">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ConfigProvider>
+  </GlobalContext.Provider>
 );
