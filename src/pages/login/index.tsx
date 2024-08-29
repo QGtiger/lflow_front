@@ -11,7 +11,7 @@ import { showLoginMessage } from "@/utils/message";
 
 export default function Login() {
   const formRef = useRef<FormInstance>(null);
-  const { nav } = useRouter();
+  const { nav, state } = useRouter();
   const { userLogin } = useUserModel();
 
   const { mutateAsync: loginMutateAsync, isPending } = useMutation({
@@ -32,10 +32,12 @@ export default function Login() {
                 placeholder: "请输入用户名",
                 prefix: <UserOutlined />,
               },
+              required: true,
             },
             {
               name: "password",
               type: "Input",
+              required: true,
               config: {
                 type: "password",
                 placeholder: "请输入密码",
@@ -53,7 +55,6 @@ export default function Login() {
             return formRef.current?.validateFields().then(async (values) => {
               const loginRes = await loginMutateAsync(values);
               userLogin(loginRes);
-              nav("/", { replace: true });
               showLoginMessage(loginRes.userInfo);
             });
           }}
@@ -65,7 +66,7 @@ export default function Login() {
             type="link"
             className="p-0"
             onClick={() => {
-              nav("/register", { replace: true });
+              nav("/register", { replace: true, state });
             }}
           >
             还没有账户？去注册

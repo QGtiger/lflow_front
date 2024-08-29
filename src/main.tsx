@@ -8,10 +8,37 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import CommonLayout from "./components/CommonLayout";
+import RequireAuth from "./components/RequireAuth";
 
 const handlePath = (path: string) => {
   return path.replace(/\[(.*?)\]/g, ":$1");
 };
+
+// 生成组件
+function generateComp(
+  moduleComp: {
+    default: any;
+    settings?: {
+      login?: boolean;
+    };
+  } = {
+    default: CommonLayout,
+  }
+) {
+  const { settings = {} } = moduleComp;
+  if (settings.login) {
+    return () => {
+      console.log("emmmmm");
+      const M = moduleComp.default || CommonLayout;
+      return (
+        <RequireAuth>
+          <M></M>
+        </RequireAuth>
+      );
+    };
+  }
+  return moduleComp.default || CommonLayout;
+}
 
 function initRoutes() {
   const routeMap: Record<string, { default: any }> = import.meta.glob(
@@ -54,8 +81,8 @@ function initRoutes() {
     const layoutUrl = `${relativePath}/layout.tsx`;
     const notFoundUrl = `${relativePath}/notFound.tsx`;
 
-    const LayoutComp = layoutMap[layoutUrl]?.default || CommonLayout;
-    const PageComp = routeMap[pageUrl]?.default;
+    const LayoutComp = generateComp(layoutMap[layoutUrl]);
+    const PageComp = generateComp(routeMap[pageUrl]);
     const NotFoundComp = notFoundMap[notFoundUrl]?.default;
 
     let route = routes.find((item) => item.path === handlePath(path));

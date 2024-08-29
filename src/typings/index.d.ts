@@ -1,0 +1,3 @@
+interface PageSettings {
+  login?: boolean;
+}

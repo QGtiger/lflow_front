@@ -14,7 +14,7 @@ import { createNotification } from "@/utils/customNotification";
 
 export default function Register() {
   const formRef = useRef<FormInstance>(null);
-  const { nav } = useRouter();
+  const { nav, state } = useRouter();
   const { userLogin } = useUserModel();
 
   const { mutateAsync: registerMutateAsync, isPending } = useMutation({
@@ -23,7 +23,6 @@ export default function Register() {
       return register(params).then((res) => {
         userLogin(res);
         showRegisterMessage(res.userInfo);
-        nav("/", { replace: true });
       });
     },
   });
@@ -126,6 +125,7 @@ export default function Register() {
             onClick={() => {
               nav("/login", {
                 replace: true,
+                state,
               });
             }}
           >

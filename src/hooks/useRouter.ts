@@ -11,6 +11,7 @@ export default function useRouter<S extends { [k: string]: string }>() {
 
   return {
     ...location,
+    location,
     nav,
     searchParams,
     // 通过搜索参数导航

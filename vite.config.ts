@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => {
   // This check is important!
   if (mode === "development") {
     const env = loadEnv(mode, process.cwd(), "");
-    console.log(env);
     dotenvExpand.expand({ parsed: env });
   }
 
