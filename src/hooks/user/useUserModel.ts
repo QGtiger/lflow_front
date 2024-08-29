@@ -1,5 +1,4 @@
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/api";
-import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function useUserModel() {
@@ -16,10 +15,11 @@ export default function useUserModel() {
     }
   };
 
-  const userLogout = useCallback(() => {
+  const userLogout = () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-  }, []);
+    nav("/login");
+  };
 
   const isLoggedIn = () => {
     return !!localStorage.getItem(ACCESS_TOKEN_KEY);
