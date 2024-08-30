@@ -18,12 +18,25 @@ export default function Login() {
     mutationFn: login,
   });
 
+  const onFormConfirm = () => {
+    return formRef.current?.validateFields().then(async (values) => {
+      const loginRes = await loginMutateAsync(values);
+      userLogin(loginRes);
+      showLoginMessage(loginRes.userInfo);
+    });
+  };
+
   return (
     <div className="flex h-[100vh] items-center justify-center">
       <div className="w-[500px] mt-[-200px]">
         <SchemaForm
           ref={formRef}
           size="large"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onFormConfirm();
+            }
+          }}
           schema={[
             {
               name: "username",
@@ -36,10 +49,9 @@ export default function Login() {
             },
             {
               name: "password",
-              type: "Input",
+              type: "InputPassword",
               required: true,
               config: {
-                type: "password",
                 placeholder: "请输入密码",
                 prefix: <LockOutlined />,
               },
@@ -51,13 +63,7 @@ export default function Login() {
           type="primary"
           block
           size="large"
-          onClick={() => {
-            return formRef.current?.validateFields().then(async (values) => {
-              const loginRes = await loginMutateAsync(values);
-              userLogin(loginRes);
-              showLoginMessage(loginRes.userInfo);
-            });
-          }}
+          onClick={onFormConfirm}
         >
           登陆
         </Button>

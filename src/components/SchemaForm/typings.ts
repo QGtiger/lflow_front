@@ -5,7 +5,8 @@ export type DynamicFormFieldsType =
   | "Select"
   | "DynamicForm"
   | "InputWithCopy"
-  | "EmailCaptcha";
+  | "EmailCaptcha"
+  | "InputPassword";
 
 type BaseDynamicPayload = FormSchema;
 

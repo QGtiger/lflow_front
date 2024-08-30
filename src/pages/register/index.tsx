@@ -32,12 +32,23 @@ export default function Register() {
     mutationFn: sendEmail,
   });
 
+  const onFormConfirm = () => {
+    return formRef.current?.validateFields().then((values) => {
+      return registerMutateAsync(values);
+    });
+  };
+
   return (
     <div className="flex h-[100vh] items-center justify-center">
       <div className="w-[500px] mt-[-200px]">
         <SchemaForm
           ref={formRef}
           size="large"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onFormConfirm();
+            }
+          }}
           schema={[
             {
               name: "username",
@@ -86,6 +97,7 @@ export default function Register() {
             {
               name: "captcha",
               type: "EmailCaptcha",
+              required: true,
               config: {
                 placeholder: "请输入验证码",
                 sendCaptcha: async () => {
@@ -110,11 +122,7 @@ export default function Register() {
           type="primary"
           size="large"
           block
-          onClick={() => {
-            formRef.current?.validateFields().then((values) => {
-              return registerMutateAsync(values);
-            });
-          }}
+          onClick={onFormConfirm}
         >
           注册
         </Button>

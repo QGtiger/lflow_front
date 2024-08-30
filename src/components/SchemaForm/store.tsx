@@ -36,6 +36,7 @@ export const useFormStore = create<{
     DynamicForm: DynamicForm,
     InputWithCopy: InputWithCopy,
     EmailCaptcha,
+    InputPassword: Input.Password,
   },
   onFileUpload(file) {
     return new Promise((resolve, reject) => {

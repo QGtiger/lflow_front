@@ -81,6 +81,11 @@ export default function RecursionFormItem({
           {
             validator(_, value) {
               return new Promise<void>((r, j) => {
+                if (payload.required) {
+                  if (!value) {
+                    j(new Error(`请输入${payload.label || ""}`));
+                  }
+                }
                 const error = payload.valadator?.(value);
                 if (error) j(error);
                 r();
