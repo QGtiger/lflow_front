@@ -19,8 +19,6 @@ function MyProLayout() {
   const nav = useNavigate();
   const { userInfo } = useUserModel();
 
-  console.log(userInfo);
-
   return (
     <div>
       <ProLayout
@@ -45,45 +43,52 @@ function MyProLayout() {
             target: "_blank",
           },
         ]}
+        // breadcrumbRender={(routers = []) => {
+        //   return [];
+        // }}
         menuFooterRender={(props) => {
           const { collapsed } = props || {};
           return (
-            <UserDropDown disabled={!collapsed}>
-              <div
-                className={classNames(
-                  "flex items-center max-w-full pr-3 pl-1.5 py-1 rounded text-[#0b0e14] transition-all cursor-pointer",
-                  {
-                    "hover:bg-[#eaebeb]": collapsed,
-                  }
-                )}
-              >
-                <Avatar
-                  style={{
-                    background: "#f56a00",
-                    verticalAlign: "middle",
-                    width: "36px",
-                    height: "36px",
-                  }}
-                  className=" flex-grow-0 flex-shrink-0"
-                  gap={7}
+            <div className="pt-2 border-t">
+              <UserDropDown disabled={!collapsed}>
+                <div
+                  className={classNames(
+                    "flex items-center max-w-full pr-3 pl-1.5 py-1 rounded text-[#0b0e14] transition-all cursor-pointer",
+                    {
+                      "hover:bg-[#eaebeb]": collapsed,
+                    }
+                  )}
                 >
-                  {userInfo.username.slice(0, 1)}
-                </Avatar>
-                <div className=" flex flex-col ml-2 min-w-0 flex-1">
-                  <span className="text-regular-plus text-sm overflow-hidden overflow-ellipsis">
-                    {userInfo.username}
-                  </span>
-                  <span className="text-regular text-[#47536b] text-xs min-w-0 overflow-hidden overflow-ellipsis">
-                    {userInfo.email}
-                  </span>
+                  <Avatar
+                    style={{
+                      background: "#f56a00",
+                      verticalAlign: "middle",
+                      width: "36px",
+                      height: "36px",
+                    }}
+                    className=" flex-grow-0 flex-shrink-0"
+                    gap={7}
+                  >
+                    {userInfo.username.slice(0, 1)}
+                  </Avatar>
+                  {collapsed ? null : (
+                    <>
+                      <div className=" flex flex-col ml-2 min-w-0 flex-1">
+                        <span className="text-regular-plus text-sm overflow-hidden overflow-ellipsis text-nowrap">
+                          {userInfo.username}
+                        </span>
+                        <span className="text-regular text-[#47536b] text-xs min-w-0 overflow-hidden overflow-ellipsis">
+                          {userInfo.email}
+                        </span>
+                      </div>
+                      <UserDropDown>
+                        <MoreOutlined className=" hover:bg-[#eaebeb] rounded p-2" />
+                      </UserDropDown>
+                    </>
+                  )}
                 </div>
-                {collapsed ? null : (
-                  <UserDropDown>
-                    <MoreOutlined className=" hover:bg-[#eaebeb] rounded p-2" />
-                  </UserDropDown>
-                )}
-              </div>
-            </UserDropDown>
+              </UserDropDown>
+            </div>
           );
         }}
         onMenuHeaderClick={(e) => console.log(e)}

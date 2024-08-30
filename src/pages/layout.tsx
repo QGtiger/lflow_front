@@ -55,18 +55,16 @@ export default function Layout() {
   }, [modal, messageApi, notificationApi]);
 
   return (
-    <>
-      <UserModel.Provider>
-        <ErrorBoundary FallbackComponent={CommonErrorBoundaryPanel}>
-          <Suspense fallback={<FullScreenSpin />}>
-            <OutletWrapper />
-          </Suspense>
-        </ErrorBoundary>
-        <ReactQueryDevtools />
-        {contextHolder}
-        {messageContextHolder}
-        {notificationContextHolder}
-      </UserModel.Provider>
-    </>
+    <UserModel.Provider>
+      <ErrorBoundary FallbackComponent={CommonErrorBoundaryPanel}>
+        <Suspense fallback={<FullScreenSpin />}>
+          <OutletWrapper />
+        </Suspense>
+      </ErrorBoundary>
+      <ReactQueryDevtools />
+      {contextHolder}
+      {messageContextHolder}
+      {notificationContextHolder}
+    </UserModel.Provider>
   );
 }

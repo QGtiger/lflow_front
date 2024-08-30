@@ -28,7 +28,6 @@ function generateComp(
 ) {
   if (settingsConfig.login) {
     return () => {
-      console.log("emmmmm");
       return (
         <RequireAuth>
           <ModuleComp></ModuleComp>
