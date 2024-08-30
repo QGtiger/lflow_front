@@ -7,12 +7,13 @@ import classNames from "classnames";
 import { Avatar } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 import useUserModel from "@/hooks/user/useUserModel";
+import RequireAuth from "@/components/RequireAuth";
 
 const ProSetting: ProSettings = {
   fixSiderbar: true,
 };
 
-export default function CustomProLayout() {
+function MyProLayout() {
   const outlet = useOutlet();
   const { routesMenu } = useContext(GlobalContext);
   const nav = useNavigate();
@@ -109,5 +110,13 @@ export default function CustomProLayout() {
         disableUrlParams
       /> */}
     </div>
+  );
+}
+
+export default function CustomProLayout() {
+  return (
+    <RequireAuth>
+      <MyProLayout />
+    </RequireAuth>
   );
 }
