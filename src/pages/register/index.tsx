@@ -61,9 +61,8 @@ export default function Register() {
             },
             {
               name: "password",
-              type: "Input",
+              type: "InputPassword",
               config: {
-                type: "password",
                 placeholder: "请输入密码",
                 prefix: <LockOutlined />,
               },
