@@ -13,6 +13,8 @@ import { layoutMap, notFoundMap, routeMap, settingsMap } from "./glob";
 import "./generateMenu";
 import { generateFolderMenu } from "./generateMenu";
 import { GlobalContext } from "./context/GlobalContext";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 type ReactFunctionComponent = (props: any) => JSX.Element | null;
 
@@ -135,6 +137,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
+      <Analytics />
+      <SpeedInsights />
     </ConfigProvider>
   </GlobalContext.Provider>
 );
