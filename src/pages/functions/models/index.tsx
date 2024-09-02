@@ -1,41 +1,27 @@
 import { createCustomModel } from "@/common/createModel";
 import useRouter from "@/hooks/useRouter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useUpdate } from "ahooks";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import {
+  addCloudFunctionEntityItem,
+  deleteCloudFunction,
+  queryCloudFunctions,
+  updateCloudFunction,
+} from "./api";
 
 export type FolderItemType = {
   name: string;
   description: string;
   uid: string;
-  parentUid?: string;
-  isDir: boolean;
-  createdAt: number;
-  updatedAt: number;
+  parent_uid?: string;
+  isdir: boolean;
+  created_at: number;
+  updated_at: number;
   children?: FolderItemType[];
 };
 
-const _folder: FolderItemType[] = [
-  {
-    name: "文件夹1",
-    description: "文件夹1描述",
-    uid: "1",
-    isDir: true,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  },
-  {
-    name: "文件夹2",
-    description: "文件夹2描述",
-    uid: "2",
-    isDir: true,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-    parentUid: "1",
-  },
-];
-
-const ROOT_FOLDER_UID = "root";
+export const ROOT_FOLDER_UID = "root";
 
 export const FunctionsModel = createCustomModel(function () {
   const { searchParams } = useRouter<{
@@ -48,7 +34,7 @@ export const FunctionsModel = createCustomModel(function () {
   const { refetch: queryFolders } = useQuery({
     queryKey: ["folderList"],
     queryFn: async () => {
-      const data = _folder;
+      const data = await queryCloudFunctions<FolderItemType[]>();
       folderMapRef.current = data.reduce((acc, cur) => {
         acc[cur.uid] = cur;
         return acc;
@@ -59,15 +45,15 @@ export const FunctionsModel = createCustomModel(function () {
         uid: ROOT_FOLDER_UID,
         name: "根目录",
         description: "根目录",
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        isDir: true,
+        created_at: Date.now(),
+        updated_at: Date.now(),
+        isdir: true,
         children: [],
       };
 
       // 递归构建树形结构
       data.forEach((item) => {
-        const parent = folderMapRef.current[item.parentUid || ROOT_FOLDER_UID];
+        const parent = folderMapRef.current[item.parent_uid || ROOT_FOLDER_UID];
         if (parent) {
           parent.children = parent.children || [];
           parent.children.push(item);
@@ -80,34 +66,60 @@ export const FunctionsModel = createCustomModel(function () {
     },
   });
 
-  const addFolderItem = async (v: any) => {
-    // TODO
-    console.log(v);
-  };
+  const memoFolderList = useMemo(() => {
+    const list = folderMapRef.current[f]?.children || [];
+    // 创建时间排序，还有是否是文件夹排序
+    list.sort((a, b) => b.created_at - a.created_at);
+    return list.sort((a, b) => (a.isdir === b.isdir ? 0 : a.isdir ? -1 : 1));
+  }, [folderMapRef.current, f]);
 
-  const updateFolderItem = async (v: any) => {
-    // TODO
-    console.log(v);
-  };
+  const { mutateAsync: addFolderItem } = useMutation({
+    mutationKey: ["addFolderItem"],
+    mutationFn: async (
+      params: Omit<
+        Parameters<typeof addCloudFunctionEntityItem>[0],
+        "parent_uid"
+      >
+    ) => {
+      await addCloudFunctionEntityItem({
+        ...params,
+        parent_uid: f,
+      });
+    },
+    onSuccess() {
+      queryFolders();
+    },
+  });
 
-  const deleteFolderItem = async (v: any) => {
-    console.log(v);
-  };
+  const { mutateAsync: updateFolderItem } = useMutation({
+    mutationKey: ["updateCloudFunction"],
+    mutationFn: (params: Parameters<typeof updateCloudFunction>[0]) => {
+      return updateCloudFunction(params);
+    },
+    onSuccess: queryFolders,
+  });
+
+  const { mutateAsync: deleteFolderItem } = useMutation({
+    mutationKey: ["deleteFolderItem"],
+    mutationFn: deleteCloudFunction,
+    onSuccess: queryFolders,
+  });
 
   // 获取父级目录
   const getParentFolder = (uid: string) => {
     return folderMapRef.current[
-      folderMapRef.current[uid]?.parentUid || ROOT_FOLDER_UID
+      folderMapRef.current[uid]?.parent_uid || ROOT_FOLDER_UID
     ];
   };
 
   return {
-    folderList: folderMapRef.current[f]?.children || [],
+    folderList: memoFolderList,
     queryFolders,
     isRoot: f === ROOT_FOLDER_UID || !f,
     addFolderItem,
     updateFolderItem,
     deleteFolderItem,
     getParentFolder,
+    folderMap: folderMapRef.current,
   };
 });

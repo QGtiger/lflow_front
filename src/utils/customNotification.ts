@@ -9,6 +9,7 @@ function getCommonConfig(args: ArgsProps) {
   const randomKey = `notificationId${notificationId++}`;
   return {
     key: randomKey,
+    placement: "bottomRight",
     ...args,
   } as ArgsProps & { key: ArgsProps["key"] };
 }

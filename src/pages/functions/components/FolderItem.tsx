@@ -16,6 +16,7 @@ import { createNotification } from "@/utils/customNotification";
 import { ADD_FUNCTION_SCHEMA, ADD_FOLDER_SCHEMA } from "@/constants/schema";
 import { FolderItemType, FunctionsModel } from "../models";
 import StopPropagationDiv from "@/components/StopPropagationDiv";
+import dayjs from "dayjs";
 
 export function LastItem({ parent }: { parent: FolderItemType }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -27,7 +28,7 @@ export function LastItem({ parent }: { parent: FolderItemType }) {
     drop: (it: FolderItemType) => {
       updateFolderItem({
         uid: it.uid,
-        parentUid: parent.uid,
+        parent_uid: parent.uid,
       });
       createNotification({
         type: "success",
@@ -59,7 +60,7 @@ export function LastItem({ parent }: { parent: FolderItemType }) {
         boxShadow: isOver ? "#4e46dc 0px 0px 0px 2px inset" : "none",
       }}
     >
-      <div className="ml-5 w-96 lineClamp1">
+      <div className="ml-5 w-60 lineClamp1">
         <FolderOpenFilled />
         <span className="ml-2">...</span>
       </div>
@@ -90,7 +91,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
       console.log(`${it.name} => ${item.name}`);
       updateFolderItem({
         uid: it.uid,
-        parentUid: item.uid,
+        parent_uid: item.uid,
       });
       createNotification({
         type: "success",
@@ -107,7 +108,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
 
   useMount(() => {
     drag(ref);
-    item.isDir && drop(ref);
+    item.isdir && drop(ref);
     // dragPreview(getEmptyImage());
   });
 
@@ -116,7 +117,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
       ref={ref}
       onClick={() => {
         // TODO
-        item.isDir
+        item.isdir
           ? navBySearchParam("f", item.uid)
           : console.log("跳转到编辑页面");
       }}
@@ -130,12 +131,19 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         boxShadow: isOver ? "#4e46dc 0px 0px 0px 2px inset" : "none",
       }}
     >
-      <div className="ml-5 w-96 lineClamp1">
-        {item.isDir ? <FolderFilled /> : <ApiOutlined />}
+      <div className="ml-5 w-60 lineClamp1">
+        {item.isdir ? <FolderFilled /> : <ApiOutlined />}
         <span className="ml-2">{item.name}</span>
       </div>
       <div className="w-60 lineClamp1">
         <Tooltip title={item.description}>{item.description}</Tooltip>
+      </div>
+      <div className="w-60 lineClamp1">
+        {dayjs(item.created_at).format("YYYY-MM-DD hh:mm:ss")}
+      </div>
+
+      <div className="w-60 lineClamp1">
+        {dayjs(item.updated_at).format("YYYY-MM-DD hh:mm:ss")}
       </div>
       <div className="w-10 mr-3">
         <StopPropagationDiv>
@@ -152,9 +160,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
                       content:
                         "当您选择删除一个目录时，请注意，这个操作将会移除该目录及其包含的所有子目录和文件。这是一个不可逆的过程，一旦执行，您将无法恢复被删除的内容。请确保在删除之前备份任何重要数据。",
                       onOk: () => {
-                        deleteFolderItem({
-                          uid: item.uid,
-                        });
+                        deleteFolderItem(item.uid);
                       },
                     });
                   },
@@ -165,7 +171,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
                   onClick() {
                     createSchemaFormModal({
                       title: "编辑信息",
-                      schema: item.isDir
+                      schema: item.isdir
                         ? ADD_FOLDER_SCHEMA
                         : ADD_FUNCTION_SCHEMA,
                       async onFinished(values) {
