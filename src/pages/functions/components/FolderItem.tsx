@@ -140,7 +140,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         title={<StopPropagationDiv>描述</StopPropagationDiv>}
         content={<StopPropagationDiv>{item.description}</StopPropagationDiv>}
       >
-        <div className="w-60 overflow-ellipsis overflow-hidden">
+        <div className="w-60 overflow-ellipsis overflow-hidden whitespace-nowrap">
           <span>{item.description}</span>
         </div>
       </Popover>
