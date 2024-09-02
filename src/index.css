@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.lineClamp1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Change this number to the desired number of lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* .text-micro {
+  font-size: 0.6875rem !important;
+  font-weight: 400 !important;
+  line-height: 0.75rem !important;
+} */

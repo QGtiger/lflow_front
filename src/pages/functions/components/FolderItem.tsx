@@ -5,7 +5,7 @@ import {
   MoreOutlined,
 } from "@ant-design/icons";
 import { useMount } from "ahooks";
-import { Dropdown, Tooltip } from "antd";
+import { Dropdown, Popover } from "antd";
 import classNames from "classnames";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
@@ -135,9 +135,15 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         {item.isdir ? <FolderFilled /> : <ApiOutlined />}
         <span className="ml-2">{item.name}</span>
       </div>
-      <div className="w-60 lineClamp1">
-        <Tooltip title={item.description}>{item.description}</Tooltip>
-      </div>
+
+      <Popover
+        title={<StopPropagationDiv>描述</StopPropagationDiv>}
+        content={<StopPropagationDiv>{item.description}</StopPropagationDiv>}
+      >
+        <div className="w-60 overflow-ellipsis overflow-hidden">
+          <span>{item.description}</span>
+        </div>
+      </Popover>
       <div className="w-60 lineClamp1">
         {dayjs(item.created_at).format("YYYY-MM-DD hh:mm:ss")}
       </div>
