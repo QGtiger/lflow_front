@@ -20,7 +20,7 @@ function MyProLayout() {
   const { userInfo } = useUserModel();
 
   return (
-    <div>
+    <>
       <ProLayout
         route={{
           routes: routesMenu,
@@ -114,7 +114,7 @@ function MyProLayout() {
         }}
         disableUrlParams
       /> */}
-    </div>
+    </>
   );
 }
 

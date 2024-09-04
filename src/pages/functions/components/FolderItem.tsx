@@ -60,7 +60,7 @@ export function LastItem({ parent }: { parent: FolderItemType }) {
         boxShadow: isOver ? "#4e46dc 0px 0px 0px 2px inset" : "none",
       }}
     >
-      <div className="ml-5 w-60 lineClamp1">
+      <div className="ml-2 w-60 lineClamp1">
         <FolderOpenFilled />
         <span className="ml-2">...</span>
       </div>
@@ -72,7 +72,7 @@ export function LastItem({ parent }: { parent: FolderItemType }) {
 
 export default function FolderItem({ item }: { item: FolderItemType }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { navBySearchParam } = useRouter<{ f: string }>();
+  const { navBySearchParam, nav } = useRouter<{ f: string }>();
   const { deleteFolderItem, updateFolderItem } = FunctionsModel.useModel();
 
   const [{ isDragging }, drag] = useDrag({
@@ -119,7 +119,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         // TODO
         item.isdir
           ? navBySearchParam("f", item.uid)
-          : console.log("跳转到编辑页面");
+          : nav(`/functions/${item.uid}`);
       }}
       className={classNames(
         "flex cursor-pointer transition-all flex-nowrap justify-between items-center text-xs text-labelMuted border-t border-bg by-5 h-[36px] hover:bg-[#f0f3fa]",
@@ -131,7 +131,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         boxShadow: isOver ? "#4e46dc 0px 0px 0px 2px inset" : "none",
       }}
     >
-      <div className="ml-5 w-60 lineClamp1">
+      <div className="ml-2 w-60 lineClamp1">
         {item.isdir ? <FolderFilled /> : <ApiOutlined />}
         <span className="ml-2">{item.name}</span>
       </div>

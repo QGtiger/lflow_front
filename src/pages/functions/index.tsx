@@ -8,10 +8,10 @@ import AddFolderBtn from "./components/AddFolderBtn";
 import AddFunctionBtn from "./components/AddFunctionBtn";
 import EmptyFolder from "@/components/EmptyFolder";
 import { useMemo } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Spin } from "antd";
 
 export default function Functions() {
-  const { folderList, isRoot, getParentFolder, folderMap } =
+  const { folderList, isRoot, getParentFolder, folderMap, refreshing } =
     FunctionsModel.useModel();
   const {
     searchParams: { f },
@@ -62,31 +62,33 @@ export default function Functions() {
         return <Breadcrumb items={breadCrumbList} />;
       }}
     >
-      <div className="folder-system">
-        {isRoot && !folderList?.length ? (
-          <EmptyFolder className="mt-20"></EmptyFolder>
-        ) : (
-          <div className="mt-4 select-none">
-            <div className="flex flex-row flex-nowrap justify-between items-center">
-              <div className="text-micro text-labelFaint ml-5 w-60">名称</div>
-              <div className="text-micro text-labelFaint w-60">描述</div>
-              <div className="text-micro text-labelFaint w-60">创建时间</div>
-              <div className="text-micro text-labelFaint w-60">更新时间</div>
-              <div className="text-micro text-labelFaint w-10 mr-3"> </div>
-            </div>
-            <DndProvider backend={HTML5Backend}>
-              <div className="mt-1.5">
-                {!isRoot && <LastItem parent={getParentFolder(f)} />}
-                {folderList?.map((item) => {
-                  return <FolderItem key={item.uid} item={item} />;
-                })}
+      <Spin spinning={refreshing}>
+        <div className="folder-system">
+          {isRoot && !folderList?.length ? (
+            <EmptyFolder className="mt-20"></EmptyFolder>
+          ) : (
+            <div className="mt-4 select-none">
+              <div className="flex flex-row flex-nowrap justify-between items-center">
+                <div className="text-micro text-labelFaint w-60 ml-2">名称</div>
+                <div className="text-micro text-labelFaint w-60">描述</div>
+                <div className="text-micro text-labelFaint w-60">创建时间</div>
+                <div className="text-micro text-labelFaint w-60">更新时间</div>
+                <div className="text-micro text-labelFaint w-10 mr-3"> </div>
               </div>
-              {/* <DragLayer /> */}
-            </DndProvider>
-            <div className="border-t border-bg"></div>
-          </div>
-        )}
-      </div>
+              <DndProvider backend={HTML5Backend}>
+                <div className="mt-1.5">
+                  {!isRoot && <LastItem parent={getParentFolder(f)} />}
+                  {folderList?.map((item) => {
+                    return <FolderItem key={item.uid} item={item} />;
+                  })}
+                </div>
+                {/* <DragLayer /> */}
+              </DndProvider>
+              <div className="border-t border-bg"></div>
+            </div>
+          )}
+        </div>
+      </Spin>
     </PageContainer>
   );
 }

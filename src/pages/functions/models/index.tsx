@@ -31,7 +31,7 @@ export const FunctionsModel = createCustomModel(function () {
   const folderMapRef = useRef<Record<string, FolderItemType>>({});
   const update = useUpdate();
 
-  const { refetch: queryFolders } = useQuery({
+  const { refetch: queryFolders, isPending } = useQuery({
     queryKey: ["folderList"],
     queryFn: async () => {
       const data = await queryCloudFunctions<FolderItemType[]>();
@@ -121,5 +121,6 @@ export const FunctionsModel = createCustomModel(function () {
     deleteFolderItem,
     getParentFolder,
     folderMap: folderMapRef.current,
+    refreshing: isPending,
   };
 });
