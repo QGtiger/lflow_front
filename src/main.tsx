@@ -10,11 +10,11 @@ import "./index.css";
 import CommonLayout from "./components/CommonLayout";
 import RequireAuth from "./components/RequireAuth";
 import { layoutMap, notFoundMap, routeMap, settingsMap } from "./glob";
-import "./generateMenu";
 import { generateFolderMenu } from "./generateMenu";
 import { GlobalContext } from "./context/GlobalContext";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { AliveScope } from "react-activation";
 
 type ReactFunctionComponent = (props: any) => JSX.Element | null;
 
@@ -128,17 +128,19 @@ console.log("menu", menu);
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <GlobalContext.Provider
-    value={{
-      routesMenu: menu,
-    }}
-  >
-    <ConfigProvider prefixCls="lflow">
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-      <Analytics />
-      <SpeedInsights />
-    </ConfigProvider>
-  </GlobalContext.Provider>
+  <AliveScope>
+    <GlobalContext.Provider
+      value={{
+        routesMenu: menu,
+      }}
+    >
+      <ConfigProvider prefixCls="lflow">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+        <Analytics />
+        <SpeedInsights />
+      </ConfigProvider>
+    </GlobalContext.Provider>
+  </AliveScope>
 );
