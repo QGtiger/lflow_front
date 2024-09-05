@@ -1,6 +1,7 @@
 import { useOutlet, useParams } from "react-router-dom";
 import { CloudFunctionDetailModel } from "./models";
 import { useMemo } from "react";
+import KeepRouteAlive from "@/components/KeepRouteAlive";
 
 export default function CloudFunctionDetailLayout() {
   const outlet = useOutlet();
@@ -15,11 +16,11 @@ export default function CloudFunctionDetailLayout() {
     };
   }, [id]);
 
-  console.log("outlet", outlet);
-
   return (
-    <CloudFunctionDetailModel.Provider value={memoProviderValue}>
-      {outlet}
-    </CloudFunctionDetailModel.Provider>
+    <KeepRouteAlive>
+      <CloudFunctionDetailModel.Provider value={memoProviderValue}>
+        {outlet}
+      </CloudFunctionDetailModel.Provider>
+    </KeepRouteAlive>
   );
 }

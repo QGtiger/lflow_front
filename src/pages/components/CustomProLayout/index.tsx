@@ -8,6 +8,9 @@ import { Avatar } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
 import useUserModel from "@/hooks/user/useUserModel";
 import RequireAuth from "@/components/RequireAuth";
+import TabHeader from "./tabHeader";
+
+import "./index.css";
 
 const ProSetting: ProSettings = {
   fixSiderbar: true,
@@ -43,6 +46,9 @@ function MyProLayout() {
             target: "_blank",
           },
         ]}
+        onPageChange={(location) => {
+          console.log(location);
+        }}
         // breadcrumbRender={(routers = []) => {
         //   return [];
         // }}
@@ -103,7 +109,10 @@ function MyProLayout() {
         )}
         {...ProSetting}
       >
-        {outlet}
+        <>
+          <TabHeader />
+          {outlet}
+        </>
       </ProLayout>
       {/* <SettingDrawer
         pathname={pathname}

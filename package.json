@@ -22,6 +22,7 @@
     "axios": "^1.6.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
+    "immer": "^10.1.1",
     "react": "^18.3.1",
     "react-activation": "^0.12.4",
     "react-dnd": "^16.0.1",
@@ -30,6 +31,7 @@
     "react-error-boundary": "^3.1.4",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.23.1",
+    "uuid": "^10.0.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
@@ -37,6 +39,7 @@
     "@types/node": "^22.5.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.16",
     "dotenv": "^9.0.2",

@@ -1,8 +1,8 @@
 import { createCustomModel } from "@/common/createModel";
 import useRouter from "@/hooks/useRouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useUpdate } from "ahooks";
-import { useMemo, useRef } from "react";
+import { useCreation } from "ahooks";
+import { useState } from "react";
 import {
   addCloudFunctionEntityItem,
   deleteCloudFunction,
@@ -28,20 +28,21 @@ export const FunctionsModel = createCustomModel(function () {
     f?: string;
   }>();
   const { f = ROOT_FOLDER_UID } = searchParams;
-  const folderMapRef = useRef<Record<string, FolderItemType>>({});
-  const update = useUpdate();
+  const [folderMap, setfolderMap] = useState<Record<string, FolderItemType>>(
+    {}
+  );
 
-  const { refetch: queryFolders, isPending } = useQuery({
+  const { refetch: queryFolders, isFetching } = useQuery({
     queryKey: ["folderList"],
     queryFn: async () => {
       const data = await queryCloudFunctions<FolderItemType[]>();
-      folderMapRef.current = data.reduce((acc, cur) => {
+      const _folderMap = data.reduce((acc, cur) => {
         acc[cur.uid] = cur;
         return acc;
       }, {} as Record<string, FolderItemType>);
 
       // 构建根目录
-      folderMapRef.current[ROOT_FOLDER_UID] = {
+      _folderMap[ROOT_FOLDER_UID] = {
         uid: ROOT_FOLDER_UID,
         name: "根目录",
         description: "根目录",
@@ -53,25 +54,24 @@ export const FunctionsModel = createCustomModel(function () {
 
       // 递归构建树形结构
       data.forEach((item) => {
-        const parent = folderMapRef.current[item.parent_uid || ROOT_FOLDER_UID];
+        const parent = _folderMap[item.parent_uid || ROOT_FOLDER_UID];
         if (parent) {
           parent.children = parent.children || [];
           parent.children.push(item);
         }
       });
 
-      console.log(folderMapRef.current, f, folderMapRef.current);
-      update();
+      setfolderMap(_folderMap);
       return data;
     },
   });
 
-  const memoFolderList = useMemo(() => {
-    const list = folderMapRef.current[f]?.children || [];
+  const memoFolderList = useCreation(() => {
+    const list = folderMap[f]?.children || [];
     // 创建时间排序，还有是否是文件夹排序
     list.sort((a, b) => b.created_at - a.created_at);
     return list.sort((a, b) => (a.isdir === b.isdir ? 0 : a.isdir ? -1 : 1));
-  }, [folderMapRef.current, f]);
+  }, [f, folderMap]);
 
   const { mutateAsync: addFolderItem } = useMutation({
     mutationKey: ["addFolderItem"],
@@ -107,9 +107,7 @@ export const FunctionsModel = createCustomModel(function () {
 
   // 获取父级目录
   const getParentFolder = (uid: string) => {
-    return folderMapRef.current[
-      folderMapRef.current[uid]?.parent_uid || ROOT_FOLDER_UID
-    ];
+    return folderMap[folderMap[uid]?.parent_uid || ROOT_FOLDER_UID];
   };
 
   return {
@@ -120,7 +118,7 @@ export const FunctionsModel = createCustomModel(function () {
     updateFolderItem,
     deleteFolderItem,
     getParentFolder,
-    folderMap: folderMapRef.current,
-    refreshing: isPending,
+    folderMap,
+    refreshing: isFetching,
   };
 });

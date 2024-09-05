@@ -14,7 +14,15 @@ import { generateFolderMenu } from "./generateMenu";
 import { GlobalContext } from "./context/GlobalContext";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { AliveScope } from "react-activation";
+import { AliveScope, autoFixContext } from "react-activation";
+import reactJsxRuntime from "react/jsx-runtime";
+import reactJsxDevRuntime from "react/jsx-dev-runtime";
+
+// 修复内嵌自定义 Context 走 KeepAlive 不能 使用consumer的问题 https://github.com/StructureBuilder/react-keep-alive/issues/36
+autoFixContext(
+  [reactJsxRuntime, "jsx", "jsxs", "jsxDEV"],
+  [reactJsxDevRuntime, "jsx", "jsxs", "jsxDEV"]
+);
 
 type ReactFunctionComponent = (props: any) => JSX.Element | null;
 

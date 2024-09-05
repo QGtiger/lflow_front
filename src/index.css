@@ -15,3 +15,27 @@
   font-weight: 400 !important;
   line-height: 0.75rem !important;
 } */
+
+.scroll-content {
+  overflow: auto;
+}
+.scroll-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-content:hover::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border-style: dashed;
+  border-color: transparent;
+  border-width: 2px;
+  background-color: #b9bfca;
+  background-clip: padding-box;
+}
+
+.scroll-content:hover::-webkit-scrollbar-thumb:hover {
+  background: "#b9bfca";
+}
+
+.scroll-bar-hidden::-webkit-scrollbar {
+  display: "none";
+}
