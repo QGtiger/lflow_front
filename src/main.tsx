@@ -14,9 +14,10 @@ import { generateFolderMenu } from "./generateMenu";
 import { GlobalContext } from "./context/GlobalContext";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { AliveScope, autoFixContext } from "react-activation";
+import { autoFixContext, AliveScope } from "react-activation";
 import reactJsxRuntime from "react/jsx-runtime";
 import reactJsxDevRuntime from "react/jsx-dev-runtime";
+import { DocumentTitleProvider } from "./context/DocumentMap";
 
 // 修复内嵌自定义 Context 走 KeepAlive 不能 使用consumer的问题 https://github.com/StructureBuilder/react-keep-alive/issues/36
 autoFixContext(
@@ -137,18 +138,20 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <AliveScope>
-    <GlobalContext.Provider
-      value={{
-        routesMenu: menu,
-      }}
-    >
-      <ConfigProvider prefixCls="lflow">
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-        <Analytics />
-        <SpeedInsights />
-      </ConfigProvider>
-    </GlobalContext.Provider>
+    <DocumentTitleProvider>
+      <GlobalContext.Provider
+        value={{
+          routesMenu: menu,
+        }}
+      >
+        <ConfigProvider prefixCls="lflow">
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+          </QueryClientProvider>
+          <Analytics />
+          <SpeedInsights />
+        </ConfigProvider>
+      </GlobalContext.Provider>
+    </DocumentTitleProvider>
   </AliveScope>
 );

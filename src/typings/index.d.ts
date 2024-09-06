@@ -15,3 +15,10 @@ type ProLayoutRouteObject = {
   icon: JSX.Element;
   routes?: ProLayoutRouteObject[];
 };
+
+interface Window {
+  drop: any;
+  getCachingNodes: any;
+  refresh: any;
+  refreshScope: any;
+}

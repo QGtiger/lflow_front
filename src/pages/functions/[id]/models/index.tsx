@@ -5,7 +5,7 @@ import { getCloudFunctionDetail } from "./api";
 export const CloudFunctionDetailModel = createCustomModel(function (props: {
   uid: string;
 }) {
-  const { data: cloudFunctionDetail, isPending } = useQuery({
+  const { data: cloudFunctionDetail, isFetching } = useQuery({
     queryKey: ["cloudFunctionDetail", props.uid],
     queryFn: async () => {
       return getCloudFunctionDetail(props.uid);
@@ -14,6 +14,6 @@ export const CloudFunctionDetailModel = createCustomModel(function (props: {
 
   return {
     cloudFunctionDetail,
-    isPending,
+    isPending: isFetching,
   };
 });

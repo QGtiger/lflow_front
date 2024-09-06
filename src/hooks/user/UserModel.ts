@@ -2,7 +2,8 @@ import { request } from "@/api/request";
 import { createCustomModel } from "@/common/createModel";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/api";
 import { useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import useRouter from "../useRouter";
 
 function getUserInfoAPI() {
   return request<UserInfo>({
@@ -13,7 +14,7 @@ function getUserInfoAPI() {
 
 export const UserModel = createCustomModel(() => {
   const { state } = useLocation();
-  const nav = useNavigate();
+  const { nav } = useRouter();
   const queryRef = useRef<{
     queryPromise: Promise<void>;
     queryStatus: "init" | "loading" | "success" | "error";

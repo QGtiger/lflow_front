@@ -1,7 +1,5 @@
-import { GlobalContext } from "@/context/GlobalContext";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { useContext, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { CloseOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
@@ -9,10 +7,21 @@ import { immer } from "zustand/middleware/immer";
 import StopPropagationDiv from "@/components/StopPropagationDiv";
 import { useAliveController } from "react-activation";
 import { useUnmount } from "ahooks";
+import classNames from "classnames";
+import useRouter from "@/hooks/useRouter";
+import { useDocumentTitleMap } from "@/context/DocumentMap";
+import { getPathName } from "@/utils/path";
 
 type TabConfig = {
   uid: string;
   path: string;
+  title: string;
+};
+
+const DashboardTab: TabConfig = {
+  uid: "dashboard",
+  path: "/",
+  title: "欢迎",
 };
 
 const useTabStore = create(
@@ -21,30 +30,29 @@ const useTabStore = create(
       activeUid: string;
       tabs: Array<TabConfig>;
       setActiveTab: (tab: TabConfig) => void;
-      changeTabPath: (path: string) => void;
+      // 修改当前 tab 的 path 和 title, 并且修改 当前path 的 title
+      changeTabPath: (path: string, cb: (tab: TabConfig) => void) => void;
       addDefaultTab: (cb?: (tab: TabConfig) => void) => void;
       closeTab: (uid: string, cb?: (tab: TabConfig) => void) => void;
     }>(
       (set) => {
         return {
           activeUid: "dashboard",
-          tabs: [
-            {
-              uid: "dashboard",
-              path: "/",
-            },
-          ],
+          tabs: [DashboardTab],
           setActiveTab(tab) {
             set((state) => {
               state.activeUid = tab.uid;
               return state;
             });
           },
-          changeTabPath(path) {
+          changeTabPath(path, cb) {
             set((state) => {
               state.tabs = state.tabs.map((tab) => {
                 if (tab.uid === state.activeUid) {
-                  tab.path = path;
+                  cb(tab);
+                }
+                if (tab.path === path) {
+                  cb(tab);
                 }
                 return tab;
               });
@@ -54,8 +62,8 @@ const useTabStore = create(
           addDefaultTab(cb) {
             set((state) => {
               const tab = {
+                ...DashboardTab,
                 uid: uuidv4(),
-                path: "/",
               };
               state.tabs.push(tab);
               state.activeUid = tab.uid;
@@ -71,10 +79,7 @@ const useTabStore = create(
               tabs.splice(index, 1);
               let nextActiveTab: TabConfig | undefined;
               if (tabs.length === 0) {
-                nextActiveTab = {
-                  uid: uuidv4(),
-                  path: "/",
-                };
+                nextActiveTab = DashboardTab;
                 tabs.push(nextActiveTab);
                 state.activeUid = nextActiveTab.uid;
               } else if (activeUid === uid) {
@@ -103,19 +108,25 @@ export default function TabHeader() {
     closeTab,
     changeTabPath,
   } = useTabStore();
-  const { routesMenu } = useContext(GlobalContext);
-  const nav = useNavigate();
-  const { pathname, search } = useLocation();
-  const { dropScope, clear, getCachingNodes } = useAliveController();
+  const { nav, fullpath } = useRouter();
+  const { dropScope, clear, getCachingNodes, refresh } = useAliveController();
+  const titleMap = useDocumentTitleMap();
 
   useEffect(() => {
-    changeTabPath(pathname + search);
-  }, [changeTabPath, pathname, search]);
+    changeTabPath(fullpath, (tab) => {
+      tab.path = fullpath;
+      const _t = titleMap[fullpath];
+      if (_t) {
+        tab.title = titleMap[fullpath];
+      }
+    });
+  }, [changeTabPath, fullpath, titleMap]);
 
   useEffect(() => {
     // 每次修改 tabs 都会触发。 清除缓存
     getCachingNodes().forEach((node) => {
-      if (!tabs.find((it) => it.path === node.name) && node.name) {
+      // 清除缓存只校验 pathname
+      if (node.name && !tabs.find((it) => it.path.startsWith(node.name!))) {
         dropScope(node.name);
       }
     });
@@ -123,8 +134,15 @@ export default function TabHeader() {
 
   useUnmount(clear);
 
+  const changetabByNav = (tab: TabConfig) => {
+    nav(tab.path, {
+      replace: true,
+      title: tab.title,
+    });
+  };
+
   return (
-    <div className="w-full h-[38px] overflow-hidden bg-white">
+    <div className="w-full h-[38px] overflow-hidden bg-white flex-shrink-0">
       <div
         className="flex h-full left-0 top-0 items-center relative z-[60]"
         style={{
@@ -144,25 +162,28 @@ export default function TabHeader() {
                 onClick={() => {
                   if (activeUid === tab.uid) return;
                   setActiveTab(tab);
-                  nav(tab.path, {
-                    replace: true,
-                  });
+                  changetabByNav(tab);
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <span>
-                    {routesMenu.find((item) => item.path === tab.path)?.name}
-                  </span>
+                  <span>{tab.title}</span>
                   <StopPropagationDiv>
-                    <CloseOutlined
-                      onClick={() => {
-                        closeTab(tab.uid, (tab) => {
-                          nav(tab.path);
-                          console.log(tabs);
-                        });
-                      }}
-                      className=" cursor-pointer hidden group-hover:flex hover:bg-[#c2c5cf] rounded-full w-[16px] h-[16px] p-[3px] items-center justify-center"
-                    />
+                    <div className="gap-1 hidden group-hover:flex">
+                      <ReloadOutlined
+                        onClick={() => {
+                          refresh(getPathName(tab.path));
+                        }}
+                        className="cursor-pointer flex hover:bg-[#e2e4eb] rounded-full w-[16px] h-[16px] p-[3px] items-center justify-center"
+                      ></ReloadOutlined>
+                      <CloseOutlined
+                        onClick={() => {
+                          closeTab(tab.uid, changetabByNav);
+                        }}
+                        className={classNames(
+                          " cursor-pointer flex hover:bg-[#e2e4eb] rounded-full w-[16px] h-[16px] p-[3px] items-center justify-center"
+                        )}
+                      />
+                    </div>
                   </StopPropagationDiv>
                 </div>
               </div>
@@ -171,9 +192,7 @@ export default function TabHeader() {
           <div className="add-tab  flex-0">
             <PlusOutlined
               onClick={() => {
-                addDefaultTab((tab) => {
-                  nav(tab.path);
-                });
+                addDefaultTab(changetabByNav);
               }}
               className=" m-2 p-1 rounded-sm hover:bg-[#f0f1f5] cursor-pointer transition-all"
             />

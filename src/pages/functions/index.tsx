@@ -9,8 +9,9 @@ import AddFunctionBtn from "./components/AddFunctionBtn";
 import EmptyFolder from "@/components/EmptyFolder";
 import { useMemo } from "react";
 import { Breadcrumb, Spin } from "antd";
+import KeepRouteAlive from "@/components/KeepRouteAlive";
 
-export default function Functions() {
+function Functions() {
   const { folderList, isRoot, getParentFolder, folderMap, refreshing } =
     FunctionsModel.useModel();
   const {
@@ -52,8 +53,6 @@ export default function Functions() {
     });
   }, [f, folderMap, navBySearchParam]);
 
-  console.log(breadCrumbList);
-
   return (
     <PageContainer
       content="欢迎使用 云函数， 云函数可以让你在云端运行代码，无需搭建服务器。"
@@ -90,5 +89,15 @@ export default function Functions() {
         </div>
       </Spin>
     </PageContainer>
+  );
+}
+
+export default function FunctionDetail() {
+  return (
+    <KeepRouteAlive>
+      <FunctionsModel.Provider>
+        <Functions />
+      </FunctionsModel.Provider>
+    </KeepRouteAlive>
   );
 }

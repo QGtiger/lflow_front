@@ -119,7 +119,9 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         // TODO
         item.isdir
           ? navBySearchParam("f", item.uid)
-          : nav(`/functions/${item.uid}`);
+          : nav(`/functions/${item.uid}`, {
+              title: item.name,
+            });
       }}
       className={classNames(
         "flex cursor-pointer transition-all flex-nowrap justify-between items-center text-xs text-labelMuted border-t border-bg by-5 h-[36px] hover:bg-[#f0f3fa]",
@@ -140,7 +142,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         title={<StopPropagationDiv>描述</StopPropagationDiv>}
         content={<StopPropagationDiv>{item.description}</StopPropagationDiv>}
       >
-        <div className="w-60 overflow-ellipsis overflow-hidden whitespace-nowrap">
+        <div className="w-60 overflow-ellipsis overflow-hidden whitespace-nowrap pr-3">
           <span>{item.description}</span>
         </div>
       </Popover>

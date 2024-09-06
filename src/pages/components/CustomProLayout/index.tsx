@@ -1,7 +1,7 @@
 import { GlobalContext } from "@/context/GlobalContext";
 import { ProLayout, ProSettings } from "@ant-design/pro-components";
 import { useContext } from "react";
-import { useNavigate, useOutlet } from "react-router-dom";
+import { useOutlet } from "react-router-dom";
 import UserDropDown from "../UserDropDown";
 import classNames from "classnames";
 import { Avatar } from "antd";
@@ -11,6 +11,7 @@ import RequireAuth from "@/components/RequireAuth";
 import TabHeader from "./tabHeader";
 
 import "./index.css";
+import useRouter from "@/hooks/useRouter";
 
 const ProSetting: ProSettings = {
   fixSiderbar: true,
@@ -19,7 +20,7 @@ const ProSetting: ProSettings = {
 function MyProLayout() {
   const outlet = useOutlet();
   const { routesMenu } = useContext(GlobalContext);
-  const nav = useNavigate();
+  const { nav } = useRouter();
   const { userInfo } = useUserModel();
 
   return (
@@ -28,7 +29,6 @@ function MyProLayout() {
         route={{
           routes: routesMenu,
         }}
-        title="lflow"
         className="custom-pro-layout"
         appList={[
           {
@@ -46,9 +46,6 @@ function MyProLayout() {
             target: "_blank",
           },
         ]}
-        onPageChange={(location) => {
-          console.log(location);
-        }}
         // breadcrumbRender={(routers = []) => {
         //   return [];
         // }}
@@ -101,7 +98,9 @@ function MyProLayout() {
         menuItemRender={(item, dom) => (
           <a
             onClick={() => {
-              nav(item.path || "/");
+              nav(item.path || "/", {
+                title: item.name,
+              });
             }}
           >
             {dom}

@@ -2,6 +2,7 @@ import { Spin } from "antd";
 import Header from "./components/header";
 import { CloudFunctionDetailModel } from "./models";
 import { useEffect, useState } from "react";
+import { useDocumentTitle } from "@/context/DocumentMap";
 
 function Counter() {
   const [count, setCount] = useState(0);
@@ -25,7 +26,17 @@ function Counter() {
 }
 
 export default function CloudFunctionDetail() {
-  const { isPending } = CloudFunctionDetailModel.useModel();
+  const { isPending, cloudFunctionDetail } =
+    CloudFunctionDetailModel.useModel();
+
+  const setDocumentTitle = useDocumentTitle();
+
+  useEffect(() => {
+    cloudFunctionDetail?.name &&
+      setDocumentTitle({
+        title: cloudFunctionDetail?.name,
+      });
+  }, [cloudFunctionDetail?.name, setDocumentTitle]);
 
   if (isPending) {
     return (

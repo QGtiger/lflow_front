@@ -11,11 +11,15 @@ import { register, sendEmail } from "./api";
 import useUserModel from "@/hooks/user/useUserModel";
 import { showRegisterMessage } from "@/utils/message";
 import { createNotification } from "@/utils/customNotification";
+import { useDocumentTitle } from "@/context/DocumentMap";
 
 export default function Register() {
   const formRef = useRef<FormInstance>(null);
   const { nav, state } = useRouter();
   const { userLogin } = useUserModel();
+  useDocumentTitle({
+    title: "注册",
+  });
 
   const { mutateAsync: registerMutateAsync, isPending } = useMutation({
     mutationKey: ["register"],

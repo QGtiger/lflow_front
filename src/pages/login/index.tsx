@@ -8,11 +8,15 @@ import { login } from "./api";
 import { useMutation } from "@tanstack/react-query";
 import useUserModel from "@/hooks/user/useUserModel";
 import { showLoginMessage } from "@/utils/message";
+import { useDocumentTitle } from "@/context/DocumentMap";
 
 export default function Login() {
   const formRef = useRef<FormInstance>(null);
   const { nav, state } = useRouter();
   const { userLogin } = useUserModel();
+  useDocumentTitle({
+    title: "登陆",
+  });
 
   const { mutateAsync: loginMutateAsync, isPending } = useMutation({
     mutationFn: login,
