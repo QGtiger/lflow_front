@@ -1,3 +1,4 @@
+import { PathTitleMap } from "@/constants";
 import { useDocumentTitleSelector } from "@/context/DocumentMap";
 import {
   NavigateOptions,
@@ -17,12 +18,6 @@ type NewNavigateOptions = NavigateOptions & {
 };
 
 const getPathTitle = (() => {
-  const PathTitleMap: Record<string, string> = {
-    "/": "欢迎",
-    "/login": "登录",
-    "/register": "注册",
-    "/functions": "云函数",
-  };
   const kyes = Object.keys(PathTitleMap).slice(1);
   return (path: string | Partial<Path>) => {
     const _path = getPath(path);

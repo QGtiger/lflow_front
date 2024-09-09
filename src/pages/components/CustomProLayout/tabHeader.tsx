@@ -1,5 +1,5 @@
 import { CloseOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
@@ -11,6 +11,7 @@ import classNames from "classnames";
 import useRouter from "@/hooks/useRouter";
 import { useDocumentTitleMap } from "@/context/DocumentMap";
 import { getPathName } from "@/utils/path";
+import { GlobalContext } from "@/context/GlobalContext";
 
 type TabConfig = {
   uid: string;
@@ -108,6 +109,7 @@ export default function TabHeader() {
     closeTab,
     changeTabPath,
   } = useTabStore();
+  const { routesMenu } = useContext(GlobalContext);
   const { nav, fullpath } = useRouter();
   const { dropScope, clear, getCachingNodes, refresh } = useAliveController();
   const titleMap = useDocumentTitleMap();
@@ -141,6 +143,12 @@ export default function TabHeader() {
     });
   };
 
+  const getIconByPathName = (path: string) => {
+    const rootPathName = path.split("/")[1] || "";
+    const route = routesMenu.find((route) => route.path === `/${rootPathName}`);
+    return route?.icon;
+  };
+
   return (
     <div className="w-full h-[38px] overflow-hidden bg-white flex-shrink-0">
       <div
@@ -166,7 +174,12 @@ export default function TabHeader() {
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <span>{tab.title}</span>
+                  <div className="flex gap-2 items-center">
+                    <span className="icon mt-[-1px]">
+                      {getIconByPathName(tab.path)}
+                    </span>
+                    <span>{tab.title}</span>
+                  </div>
                   <StopPropagationDiv>
                     <div className="gap-1 hidden group-hover:flex">
                       <ReloadOutlined

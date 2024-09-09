@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+import { PathTitleMap } from "@/constants";
 import useRouter from "@/hooks/useRouter";
 import { useMount } from "ahooks";
 import { createContext, PropsWithChildren, useContext } from "react";
@@ -16,7 +17,7 @@ type DocumentTitleState = {
 const store = createStore(
   immer<DocumentTitleState>((set, get) => {
     return {
-      titleMap: {},
+      titleMap: PathTitleMap,
       setTitle: (path: string, title: string) => {
         document.title = title;
         set((state) => {
