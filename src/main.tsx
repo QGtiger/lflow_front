@@ -134,7 +134,13 @@ console.log(routes);
 const menu = generateFolderMenu();
 console.log("menu", menu);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <AliveScope>

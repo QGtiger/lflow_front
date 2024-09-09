@@ -27,3 +27,11 @@
     radial-gradient(at 88% 12%, hsla(227, 70%, 49%, 0.1) 0px, transparent 50%),
     radial-gradient(at 100% 37%, hsla(254, 68%, 56%, 0) 0px, transparent 50%) !important; */
 }
+
+.ka-wrapper {
+  height: calc(100vh - 38px);
+}
+
+.ka-content {
+  height: 100%;
+}

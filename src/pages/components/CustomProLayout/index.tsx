@@ -1,6 +1,6 @@
 import { GlobalContext } from "@/context/GlobalContext";
 import { ProLayout, ProSettings } from "@ant-design/pro-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useOutlet } from "react-router-dom";
 import UserDropDown from "../UserDropDown";
 import classNames from "classnames";
@@ -22,6 +22,10 @@ function MyProLayout() {
   const { routesMenu } = useContext(GlobalContext);
   const { nav } = useRouter();
   const { userInfo } = useUserModel();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
+    fixSiderbar: true,
+  });
 
   return (
     <>
@@ -107,6 +111,7 @@ function MyProLayout() {
           </a>
         )}
         {...ProSetting}
+        {...settings}
       >
         <>
           <TabHeader />
@@ -114,7 +119,6 @@ function MyProLayout() {
         </>
       </ProLayout>
       {/* <SettingDrawer
-        pathname={pathname}
         getContainer={() => document.getElementById("test-pro-layout")}
         settings={settings}
         onSettingChange={(changeSetting) => {

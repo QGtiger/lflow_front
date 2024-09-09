@@ -175,9 +175,7 @@ export default function TabHeader() {
               >
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 items-center">
-                    <span className="icon mt-[-1px]">
-                      {getIconByPathName(tab.path)}
-                    </span>
+                    <span className="icon">{getIconByPathName(tab.path)}</span>
                     <span>{tab.title}</span>
                   </div>
                   <StopPropagationDiv>
