@@ -138,14 +138,16 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         <span className="ml-2">{item.name}</span>
       </div>
 
-      <Popover
-        title={<StopPropagationDiv>描述</StopPropagationDiv>}
-        content={<StopPropagationDiv>{item.description}</StopPropagationDiv>}
-      >
-        <div className="w-60 overflow-ellipsis overflow-hidden whitespace-nowrap pr-3">
-          <span>{item.description}</span>
-        </div>
-      </Popover>
+      <div className="w-60">
+        <Popover
+          title={<StopPropagationDiv>描述</StopPropagationDiv>}
+          content={<StopPropagationDiv>{item.description}</StopPropagationDiv>}
+        >
+          <div className="inline-block max-w-full text-ellipsis overflow-hidden whitespace-nowrap pr-3">
+            <span>{item.description}</span>
+          </div>
+        </Popover>
+      </div>
       <div className="w-60 lineClamp1">
         {dayjs(item.created_at).format("YYYY-MM-DD hh:mm:ss")}
       </div>
