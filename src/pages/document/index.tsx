@@ -1,28 +1,45 @@
+import { FlowDesignerProvider } from "@/components/FlowDesigner";
 import { useState } from "react";
-import KeepAlive from "react-activation"
 
 function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <div>
       <p>count: {count}</p>
-      <button onClick={() => setCount(count => count + 1)}>Add</button>
+      <button onClick={() => setCount((count) => count + 1)}>Add</button>
     </div>
-  )
+  );
 }
 
 export default function Document() {
-  const [show, setShow] = useState(true)
-
   return (
-    <div>
-      <button onClick={() => setShow(show => !show)}>Toggle</button>
-      {show && (
-        <KeepAlive>
-          <Counter />
-        </KeepAlive>
-      )}
-    </div>
-  )
+    <FlowDesignerProvider
+      flowNodes={[
+        {
+          id: "1",
+          next: "2",
+          connectorCode: "connectorCode",
+          actionCode: "actionCode",
+        },
+        {
+          id: "2",
+          next: "3",
+          connectorCode: "connectorCode",
+          actionCode: "actionCode",
+        },
+        {
+          id: "3",
+          next: "4",
+          connectorCode: "connectorCode",
+          actionCode: "actionCode",
+        },
+        {
+          id: "4",
+          connectorCode: "connectorCode",
+          actionCode: "actionCode",
+        },
+      ]}
+    ></FlowDesignerProvider>
+  );
 }

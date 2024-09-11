@@ -33,6 +33,7 @@ function MyProLayout() {
         route={{
           routes: routesMenu,
         }}
+        title="lflow"
         className="custom-pro-layout"
         appList={[
           {
