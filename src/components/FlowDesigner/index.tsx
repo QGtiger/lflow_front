@@ -6,18 +6,31 @@ import {
   ReactFlow,
   ReactFlowProvider,
 } from "@xyflow/react";
-import useLFStore from "./hooks/useLFStote";
 import useFlowNodeLayoutEngineIns from "./hooks/useFlowNodeLayoutEngineIns";
+import useLFStoreState from "./hooks/useLFStoreState";
+
+import "./index.css";
+import { CustomStepEdge } from "./components/CustomStepEdge";
+
+const edgeTypes = {
+  customStepEdge: CustomStepEdge,
+};
 
 function CustomReactFlow() {
-  const nodes = useLFStore((state) => state.nodes);
+  const { nodes, edges } = useLFStoreState();
   const FlowNodeLayoutEngineIns = useFlowNodeLayoutEngineIns();
   useEffect(() => {
     window.FlowNodeLayoutEngineIns = FlowNodeLayoutEngineIns;
   }, []);
   return (
     <ReactFlowProvider>
-      <ReactFlow nodes={nodes}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodesDraggable={false}
+        fitView
+        edgeTypes={edgeTypes}
+      >
         <Background variant={BackgroundVariant.Dots} />
       </ReactFlow>
     </ReactFlowProvider>

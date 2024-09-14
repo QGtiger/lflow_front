@@ -1,4 +1,4 @@
-import { FlowNodeLayoutEngine } from "@/libs/FlowNodeLayoutEngine";
+import { FlowNodeLayoutEngine } from "@/components/FlowDesigner/FlowNodeLayoutEngine";
 import { Edge, Node } from "@xyflow/react";
 import { createContext } from "react";
 import { createStore } from "zustand";
@@ -20,12 +20,12 @@ export function createLFStore({ flowNodes }: { flowNodes: FlowNode[] }) {
   // 创建 FlowNodeLayoutEngine 实例
   const FlowNodeLayoutEngineIns = new FlowNodeLayoutEngine();
   FlowNodeLayoutEngineIns.setGraphNode2Block(flowNodes);
-  const { nodes } = FlowNodeLayoutEngineIns.exportReactFlowData();
-  console.log(nodes);
+  const { nodes, edges } = FlowNodeLayoutEngineIns.exportReactFlowDataByRoot();
+  console.log(nodes, edges);
   const store = createStore<LFStoreState>((set) => {
     return {
       nodes: nodes,
-      edges: [],
+      edges: edges,
       FlowNodeLayoutEngineIns,
       setNodes: (nodes: Node[]) => {
         set((state) => {

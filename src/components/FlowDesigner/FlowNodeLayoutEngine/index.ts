@@ -1,4 +1,4 @@
-import { Node } from "@xyflow/react";
+import { Edge, MarkerType, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 
 export class FlowNodeLayoutEngine {
@@ -48,24 +48,59 @@ export class FlowNodeLayoutEngine {
     const parentBlock = block.parent;
     return {
       id,
-      type: "input",
       data: { label: id },
       parentId: parentBlock?.id,
       position: {
-        x: 0,
+        x: parentBlock ? (parentBlock.w - block.w) / 2 : -block.w / 2,
         y: parentBlock ? parentBlock.mb + parentBlock.h : 0,
+      },
+      style: {
+        width: block.w,
+        height: block.h,
       },
     };
   }
 
-  exportReactFlowData(block: FlowBlock = this.rootBlock) {
+  exportReactFlowData(block: FlowBlock) {
+    const nextReactFlowData = block.next
+      ? this.exportReactFlowData(block.next)
+      : {
+          nodes: [],
+          edges: [],
+        };
+
     const nodes: Node[] = Array.prototype.concat.call(
       [],
       this.getNodeData(block.id),
-      block.next ? this.exportReactFlowData(block.next).nodes : []
+      nextReactFlowData.nodes
     );
+
+    const edges: Edge[] = Array.prototype.concat.call(
+      [],
+      (() => {
+        const nextNode = nextReactFlowData.nodes.at(0);
+        if (!nextNode) return [];
+        return {
+          id: `${block.id}-${nextNode.id}`,
+          source: block.id,
+          target: nextNode.id,
+          focusable: false,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+          },
+          type: "customStepEdge",
+        } as Edge;
+      })(),
+      nextReactFlowData.edges
+    );
+
     return {
       nodes,
+      edges,
     };
+  }
+
+  exportReactFlowDataByRoot() {
+    return this.exportReactFlowData(this.rootBlock);
   }
 }

@@ -15,7 +15,7 @@ export default function CommonErrorBoundaryPanel(props: any) {
               window.location.reload();
             }}
           >
-            Back Home
+            刷新页面
           </Button>
         }
       />
