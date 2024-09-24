@@ -4,16 +4,18 @@ import {
   EdgeProps,
   getSmoothStepPath,
 } from "@xyflow/react";
+import useLFStoreState from "../../hooks/useLFStoreState";
 
 export function CustomStepEdge(props: EdgeProps) {
   const { sourceX, sourceY, targetX, targetY, markerEnd } = props;
-  const [edgePath] = getSmoothStepPath({
+  const [edgePath, labelX, labelY] = getSmoothStepPath({
     borderRadius: 0,
     sourceX,
     sourceY,
     targetX,
     targetY,
   });
+  const { edgeLabelNode } = useLFStoreState();
 
   return (
     <>
@@ -21,10 +23,23 @@ export function CustomStepEdge(props: EdgeProps) {
         path={edgePath}
         markerEnd={markerEnd}
         style={{
-          strokeWidth: 2,
+          strokeWidth: 1,
         }}
       />
-      (<EdgeLabelRenderer>11</EdgeLabelRenderer>)
+      {edgeLabelNode && (
+        <EdgeLabelRenderer>
+          <div
+            style={{
+              position: "absolute",
+              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+              pointerEvents: "all",
+              fontSize: 12,
+            }}
+          >
+            {edgeLabelNode}
+          </div>
+        </EdgeLabelRenderer>
+      )}
     </>
   );
 }

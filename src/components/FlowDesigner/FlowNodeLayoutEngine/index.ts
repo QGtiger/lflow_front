@@ -1,10 +1,23 @@
 import { Edge, MarkerType, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
+import { EventsDispatcher } from "@/common/EventsDispatcher";
+import { GlobalEventDispatcher } from "../constant";
 
-export class FlowNodeLayoutEngine {
+export class FlowNodeLayoutEngine extends EventsDispatcher {
   private nodeMap: Record<string, FlowNode> = {};
   private flowBlockMap: Record<string, FlowBlock> = {};
   private rootId: string | undefined;
+
+  constructor() {
+    super();
+    this.initEvents();
+  }
+
+  initEvents() {
+    GlobalEventDispatcher.addEventListener("rePaint", () => {
+      console.log("rePaint");
+    });
+  }
 
   get rootBlock() {
     if (!this.rootId) {
@@ -18,6 +31,10 @@ export class FlowNodeLayoutEngine {
     nodes.forEach((node) => {
       this.nodeMap[node.id] = node;
     });
+  }
+
+  getFlowBlockById(id: string) {
+    return this.flowBlockMap[id];
   }
 
   // 一些方法
@@ -35,6 +52,7 @@ export class FlowNodeLayoutEngine {
       const block = (this.flowBlockMap[nodeId] = new FlowBlock({
         id: nodeId,
       }));
+      // block.addEventListener('rePaint')
       if (parentBlock) {
         parentBlock.setNext(block);
       }
@@ -43,7 +61,7 @@ export class FlowNodeLayoutEngine {
     }
   }
 
-  getNodeData(id: string): Node {
+  private getNodeData(id: string): Node {
     const block = this.flowBlockMap[id];
     const parentBlock = block.parent;
     return {
@@ -58,6 +76,7 @@ export class FlowNodeLayoutEngine {
         width: block.w,
         height: block.h,
       },
+      type: "customNode",
     };
   }
 

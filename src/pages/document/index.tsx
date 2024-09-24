@@ -40,6 +40,7 @@ export default function Document() {
           actionCode: "actionCode",
         },
       ]}
+      edgeLabelNode={11}
     ></FlowDesignerProvider>
   );
 }
