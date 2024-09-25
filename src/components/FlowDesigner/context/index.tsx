@@ -17,7 +17,9 @@ export interface LFStoreState extends LFStoreConfig {
   edges: Edge[];
   FlowNodeLayoutEngineIns: FlowNodeLayoutEngine;
   setNodes: (nodes: Node[]) => void;
+  setEges: (edges: Edge[]) => void;
   setNodeDisplayConfig: (nodeId: string, displayConfig: RectInfer) => void;
+  dispose: () => void;
 }
 
 export type LFStoreApi = ReturnType<typeof createLFStore>;
@@ -37,9 +39,20 @@ export function createLFStore(config: LFStoreConfig) {
       nodes: nodes,
       edges: edges,
       FlowNodeLayoutEngineIns,
+      dispose() {
+        FlowNodeLayoutEngineIns.destroy();
+      },
       setNodes: (nodes: Node[]) => {
         set((state) => {
           state.nodes = nodes;
+          return {
+            ...state,
+          };
+        });
+      },
+      setEges: (edges: Edge[]) => {
+        set((state) => {
+          state.edges = edges;
           return {
             ...state,
           };
@@ -52,6 +65,12 @@ export function createLFStore(config: LFStoreConfig) {
         }
       },
     };
+  });
+  FlowNodeLayoutEngineIns.addEventListener("rePaint", () => {
+    const { nodes, edges } =
+      FlowNodeLayoutEngineIns.exportReactFlowDataByRoot();
+    store.getState().setNodes(nodes);
+    store.getState().setEges(edges);
   });
   return store;
 }

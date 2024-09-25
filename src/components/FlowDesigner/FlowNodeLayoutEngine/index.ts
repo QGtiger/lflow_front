@@ -1,9 +1,11 @@
 import { Edge, MarkerType, Node } from "@xyflow/react";
 import { FlowBlock } from "./FlowBlock";
 import { EventsDispatcher } from "@/common/EventsDispatcher";
-import { GlobalEventDispatcher } from "../constant";
+import type { RectInfer } from "./DisplayObject";
 
-export class FlowNodeLayoutEngine extends EventsDispatcher {
+export class FlowNodeLayoutEngine extends EventsDispatcher<{
+  rePaint: { id: string; rect: RectInfer };
+}> {
   private nodeMap: Record<string, FlowNode> = {};
   private flowBlockMap: Record<string, FlowBlock> = {};
   private rootId: string | undefined;
@@ -13,10 +15,14 @@ export class FlowNodeLayoutEngine extends EventsDispatcher {
     this.initEvents();
   }
 
-  initEvents() {
-    GlobalEventDispatcher.addEventListener("rePaint", () => {
-      console.log("rePaint");
-    });
+  private initEvents() {}
+
+  private removeEvents() {
+    this.removeAllEventListener();
+  }
+
+  destroy() {
+    this.removeEvents();
   }
 
   get rootBlock() {
@@ -37,6 +43,21 @@ export class FlowNodeLayoutEngine extends EventsDispatcher {
     return this.flowBlockMap[id];
   }
 
+  createFlowBlock(node: FlowNode) {
+    const item = new FlowBlock({
+      id: node.id,
+    });
+    // 绑定事件
+    item.addEventListener("resize", (e) => {
+      console.log("resize", e);
+      this.dispathcEvent("rePaint", {
+        id: node.id,
+        rect: e.data,
+      });
+    });
+    return item;
+  }
+
   // 一些方法
   setGraphNode2Block(nodes: FlowNode[], rootId?: string) {
     //
@@ -47,12 +68,9 @@ export class FlowNodeLayoutEngine extends EventsDispatcher {
     while (nodeId) {
       const node: FlowNode = this.nodeMap[nodeId];
       if (!node) {
-        throw new Error("node not found");
+        throw new Error(`node ${nodeId} not found`);
       }
-      const block = (this.flowBlockMap[nodeId] = new FlowBlock({
-        id: nodeId,
-      }));
-      // block.addEventListener('rePaint')
+      const block = (this.flowBlockMap[nodeId] = this.createFlowBlock(node));
       if (parentBlock) {
         parentBlock.setNext(block);
       }
@@ -72,15 +90,15 @@ export class FlowNodeLayoutEngine extends EventsDispatcher {
         x: parentBlock ? (parentBlock.w - block.w) / 2 : -block.w / 2,
         y: parentBlock ? parentBlock.mb + parentBlock.h : 0,
       },
-      style: {
-        width: block.w,
-        height: block.h,
-      },
+      // style: {
+      //   width: block.w,
+      //   height: block.h,
+      // },
       type: "customNode",
     };
   }
 
-  exportReactFlowData(block: FlowBlock) {
+  private exportReactFlowData(block: FlowBlock) {
     const nextReactFlowData = block.next
       ? this.exportReactFlowData(block.next)
       : {

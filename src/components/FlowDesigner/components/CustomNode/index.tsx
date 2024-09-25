@@ -7,15 +7,16 @@ export default function CustomNode(props: NodeProps) {
   const id = useNodeId();
   const nodeRef = useRef<HTMLDivElement>(null);
   const { setNodeDisplayConfig } = useLFStoreState();
+  const tt = useRef(Math.random());
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;
     console.log(props);
-    const { clientWidth, clientHeight } = entry.target as HTMLDivElement;
-    if (!clientHeight || !clientWidth) return;
+    const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
+    if (!offsetWidth || !offsetHeight) return;
     setNodeDisplayConfig(id, {
-      w: clientWidth,
-      h: clientHeight,
+      w: offsetWidth,
+      h: offsetHeight,
     });
   });
 
@@ -34,8 +35,8 @@ export default function CustomNode(props: NodeProps) {
         style={{ background: "#555" }}
         className=" invisible "
       />
-      <div className=" border rounded-sm" ref={nodeRef}>
-        123
+      <div className="border rounded-md w-full" ref={nodeRef}>
+        {tt.current}
       </div>
     </div>
   );

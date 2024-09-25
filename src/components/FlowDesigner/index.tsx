@@ -54,6 +54,11 @@ export function FlowDesignerProvider(props: PropsWithChildren<LFStoreConfig>) {
   if (!storeRef.current) {
     storeRef.current = createLFStore(props);
   }
+  useEffect(() => {
+    return () => {
+      storeRef.current?.getState().dispose();
+    };
+  }, []);
   return (
     <StoreContext.Provider value={storeRef.current}>
       <CustomReactFlow />

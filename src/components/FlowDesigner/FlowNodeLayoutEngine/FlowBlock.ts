@@ -34,6 +34,8 @@ export class FlowBlock extends DisplayObject {
     }
 
     this.removeLink();
+
+    this.removeAllEventListener();
   }
 
   /**
