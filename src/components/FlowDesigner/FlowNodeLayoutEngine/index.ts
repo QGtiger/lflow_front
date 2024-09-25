@@ -39,6 +39,10 @@ export class FlowNodeLayoutEngine extends EventsDispatcher<{
     });
   }
 
+  getFlowNode(id: string) {
+    return this.nodeMap[id];
+  }
+
   getFlowBlockById(id: string) {
     return this.flowBlockMap[id];
   }
@@ -79,6 +83,11 @@ export class FlowNodeLayoutEngine extends EventsDispatcher<{
     }
   }
 
+  /**
+   * 获取flow 节点信息
+   * @param id 节点id
+   * @returns flow 节点信息
+   */
   private getNodeData(id: string): Node {
     const block = this.flowBlockMap[id];
     const parentBlock = block.parent;
@@ -98,6 +107,11 @@ export class FlowNodeLayoutEngine extends EventsDispatcher<{
     };
   }
 
+  /**
+   * 导出flow 数据
+   * @param block 节点
+   * @returns 返回 flowNode 数据
+   */
   private exportReactFlowData(block: FlowBlock) {
     const nextReactFlowData = block.next
       ? this.exportReactFlowData(block.next)

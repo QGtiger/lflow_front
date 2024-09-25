@@ -1,3 +1,7 @@
 .react-flow__attribution {
   display: none !important;
 }
+
+.react-flow__node {
+  /* transition: all 0.3s ease-in-out; */
+}

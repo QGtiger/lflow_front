@@ -11,7 +11,7 @@ export class DisplayObject extends EventsDispatcher<{
   // 坐标矩阵，有add， sub等坐标计算方法
   w: number = 0;
   h: number = 0;
-  mb: number = 40;
+  mb: number = 70;
 
   constructor(data?: RectInfer) {
     super();

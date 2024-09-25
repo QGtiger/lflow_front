@@ -2,7 +2,6 @@ import { FlowNodeLayoutEngine } from "@/components/FlowDesigner/FlowNodeLayoutEn
 import { Edge, Node } from "@xyflow/react";
 import { createContext } from "react";
 import { createStore } from "zustand";
-import { debounce, throttle } from "lodash-es";
 
 import type { RectInfer } from "../FlowNodeLayoutEngine/DisplayObject";
 import { queueEffectFn } from "../FlowNodeLayoutEngine/queueTickFn";
@@ -11,7 +10,7 @@ import { queueEffectFn } from "../FlowNodeLayoutEngine/queueTickFn";
 
 export interface LFStoreConfig {
   flowNodes: FlowNode[];
-  edgeLabelNode?: React.ReactNode;
+  edgeLabelNodeRender?: (btnNode: React.ReactNode) => React.ReactNode;
 }
 
 export interface LFStoreState extends LFStoreConfig {

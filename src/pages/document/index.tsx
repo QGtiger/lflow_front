@@ -41,7 +41,17 @@ export default function Document() {
           actionCode: "actionCode",
         },
       ]}
-      edgeLabelNode={<PlusSquareOutlined />}
+      edgeLabelNodeRender={(btnNode) => {
+        return (
+          <div
+            onClick={() => {
+              console.log("click");
+            }}
+          >
+            {btnNode}
+          </div>
+        );
+      }}
     ></FlowDesignerProvider>
   );
 }
