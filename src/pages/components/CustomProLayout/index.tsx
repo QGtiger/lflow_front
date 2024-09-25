@@ -99,6 +99,7 @@ function MyProLayout() {
             </div>
           );
         }}
+        collapsedButtonRender={false}
         onMenuHeaderClick={(e) => console.log(e)}
         menuItemRender={(item, dom) => (
           <a

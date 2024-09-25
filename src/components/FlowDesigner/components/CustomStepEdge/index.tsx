@@ -35,6 +35,7 @@ export function CustomStepEdge(props: EdgeProps) {
               pointerEvents: "all",
               fontSize: 12,
             }}
+            className=" cursor-pointer"
           >
             {edgeLabelNode}
           </div>

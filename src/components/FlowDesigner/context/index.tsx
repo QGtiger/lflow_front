@@ -2,8 +2,10 @@ import { FlowNodeLayoutEngine } from "@/components/FlowDesigner/FlowNodeLayoutEn
 import { Edge, Node } from "@xyflow/react";
 import { createContext } from "react";
 import { createStore } from "zustand";
+import { debounce, throttle } from "lodash-es";
 
 import type { RectInfer } from "../FlowNodeLayoutEngine/DisplayObject";
+import { queueEffectFn } from "../FlowNodeLayoutEngine/queueTickFn";
 
 // https://github.com/pmndrs/zustand
 
@@ -66,11 +68,17 @@ export function createLFStore(config: LFStoreConfig) {
       },
     };
   });
-  FlowNodeLayoutEngineIns.addEventListener("rePaint", () => {
+
+  function rePaintInvoke() {
     const { nodes, edges } =
       FlowNodeLayoutEngineIns.exportReactFlowDataByRoot();
     store.getState().setNodes(nodes);
     store.getState().setEges(edges);
+  }
+
+  FlowNodeLayoutEngineIns.addEventListener("rePaint", () => {
+    // 微任务注册
+    queueEffectFn(rePaintInvoke);
   });
   return store;
 }

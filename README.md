@@ -101,3 +101,18 @@ https://www.fusejs.io/
 ## 内页，设计稿，走飞书集成平台
 
 https://anycross.feishu.cn/console/integration/7321568877564100612/workflow/7381360962961539075
+
+# 重难点
+
+## 节点重绘问题
+
+- 问题
+
+> 使用 `resize-observer-polyfill` 对节点进行监听。 dom 元素修改，会引起 flowNodeLayoutEngine 重绘，这里初次渲染的时候，每一个 dom 节点都会 被监听到，会导致重复渲染。
+
+- 解决方案
+
+采用微任务队列，防止重复注册
+
+Q:为什么不用 函数防抖呢？
+A:函数防抖基本都是用宏任务的，会导致闪一下哦。

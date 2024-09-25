@@ -11,7 +11,6 @@ export default function CustomNode(props: NodeProps) {
 
   useResizeObserver(nodeRef, (entry) => {
     if (!id) return;
-    console.log(props);
     const { offsetWidth, offsetHeight } = entry.target as HTMLDivElement;
     if (!offsetWidth || !offsetHeight) return;
     setNodeDisplayConfig(id, {
@@ -35,7 +34,10 @@ export default function CustomNode(props: NodeProps) {
         style={{ background: "#555" }}
         className=" invisible "
       />
-      <div className="border rounded-md w-full" ref={nodeRef}>
+      <div
+        className=" transition ring-1 rounded-sm w-full ring-slate-400 hover:ring-2 hover:ring-indigo-600 p-2"
+        ref={nodeRef}
+      >
         {tt.current}
       </div>
     </div>

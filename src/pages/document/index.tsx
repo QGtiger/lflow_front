@@ -1,4 +1,5 @@
 import { FlowDesignerProvider } from "@/components/FlowDesigner";
+import { PlusSquareOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 function Counter() {
@@ -40,7 +41,7 @@ export default function Document() {
           actionCode: "actionCode",
         },
       ]}
-      edgeLabelNode={11}
+      edgeLabelNode={<PlusSquareOutlined />}
     ></FlowDesignerProvider>
   );
 }
