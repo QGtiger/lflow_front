@@ -1,3 +1,4 @@
+import { request } from "@/api/request";
 import { useMount } from "ahooks";
 import { registerMicroApps, start } from "qiankun";
 
@@ -9,6 +10,9 @@ export default function IPaaS() {
         entry: process.env.MICRO_IPASS_URL!,
         container: "#ipaas-container",
         activeRule: "/ipaas",
+        props: {
+          requestClient: request,
+        },
       },
     ]);
     start();
