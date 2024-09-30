@@ -6,4 +6,5 @@ export default {
     name: "iPaaS",
     icon: <CloudFilled />,
   },
+  microApp: true,
 } as PageSettings;

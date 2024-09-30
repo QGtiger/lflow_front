@@ -7,6 +7,8 @@ interface PageSettings {
   };
   // 先不考虑这个
   separate?: boolean; // 是否独立页面
+
+  microApp?: boolean; // 是否是微应用
 }
 
 type ProLayoutRouteObject = {

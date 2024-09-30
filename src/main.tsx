@@ -77,27 +77,37 @@ function initRoutes() {
       settingsMap[settingsUrl]?.default
     );
     const NotFoundComp = notFoundMap[notFoundUrl]?.default;
+    const isMicroApp = settingsMap[settingsUrl]?.default.microApp;
 
-    let route = routes.find((item) => item.path === handlePath(path));
+    const handledPath = handlePath(path);
+    let route = routes.find((item) => item.path === handledPath);
     if (!route) {
-      route = {
-        path: handlePath(path),
-        element: <LayoutComp />,
-        children: [
-          {
-            index: true,
-            element: PageComp ? <PageComp /> : null,
-          },
-        ],
-      };
+      if (isMicroApp) {
+        route = {
+          path: handledPath + "/*",
+          element: <PageComp />,
+        };
+      } else {
+        route = {
+          path: handledPath,
+          element: <LayoutComp />,
+          children: [
+            {
+              index: true,
+              element: PageComp ? <PageComp /> : null,
+            },
+          ],
+        };
 
-      // 路由器404
-      if (NotFoundComp) {
-        route.children!.push({
-          path: "*",
-          element: <NotFoundComp />,
-        });
+        // 路由器404
+        if (NotFoundComp) {
+          route.children!.push({
+            path: "*",
+            element: <NotFoundComp />,
+          });
+        }
       }
+
       routes.unshift(route);
     }
 
@@ -119,7 +129,9 @@ function initRoutes() {
   }
 
   Object.keys(routeMap)
-    .filter((key) => !key.includes("components"))
+    .filter(
+      (key) => !["components", "models"].some((name) => key.includes(name))
+    )
     .forEach((key) => {
       dfs("./pages", key.split("/").slice(2, -1), rootRoute.children);
     });
