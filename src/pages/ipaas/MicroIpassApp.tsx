@@ -42,7 +42,12 @@ export default function MicroIPaaS() {
       <div className="p-4 skeleton-container" ref={skeletonRef}>
         <Skeleton active />
       </div>
-      <div id="ipaas-container" className="h-full"></div>
+      <div
+        id="ipaas-container"
+        style={{
+          height: "calc(100% - 38px)",
+        }}
+      ></div>
     </>
   );
 }
