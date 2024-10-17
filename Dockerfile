@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pnpm install --frozen-lockfile && pnpm run build
+RUN pnpm install --no-frozen-lockfile && pnpm run build
 
 # production stage
 FROM nginx:stable AS production-stage
