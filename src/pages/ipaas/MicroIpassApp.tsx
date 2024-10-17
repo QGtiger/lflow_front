@@ -14,7 +14,7 @@ export default function MicroIPaaS() {
       [
         {
           name: "micro-ipaas",
-          entry: process.env.MICRO_IPASS_URL!,
+          entry: "http://localhost:8000",
           container: "#ipaas-container",
           activeRule: "/ipaas",
           props: {

@@ -6,7 +6,10 @@ import { createNotification } from "@/utils/customNotification";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/api";
 
 export const client = axios.create({
-  baseURL: process.env.API_BASE_URL,
+  baseURL:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000/api"
+      : "/api",
 });
 
 const messageList = [
