@@ -10,10 +10,10 @@ export function getCloudFunctionDetail(uid: string) {
     name: string;
     description: string;
     uid: string;
-    parent_uid?: string;
-    isdir: boolean;
-    created_at: number;
-    updated_at: number;
+    parentUid?: string;
+    isDir: boolean;
+    createTime: number;
+    updateTime: number;
   }>({
     url: "/cloudfunctions/" + uid,
     method: "get",

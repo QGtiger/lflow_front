@@ -17,7 +17,7 @@ export default function AddFunctionBtn() {
           onFinished(value: { name: string; description: string }) {
             return addFolderItem({
               ...value,
-              isdir: false,
+              isDir: false,
             }).then(() => {
               createNotification({
                 type: "success",

@@ -28,7 +28,7 @@ export function LastItem({ parent }: { parent: FolderItemType }) {
     drop: (it: FolderItemType) => {
       updateFolderItem({
         uid: it.uid,
-        parent_uid: parent.uid,
+        parentUid: parent.uid,
       });
       createNotification({
         type: "success",
@@ -91,7 +91,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
       console.log(`${it.name} => ${item.name}`);
       updateFolderItem({
         uid: it.uid,
-        parent_uid: item.uid,
+        parentUid: item.uid,
       });
       createNotification({
         type: "success",
@@ -108,7 +108,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
 
   useMount(() => {
     drag(ref);
-    item.isdir && drop(ref);
+    item.isDir && drop(ref);
     // dragPreview(getEmptyImage());
   });
 
@@ -117,7 +117,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
       ref={ref}
       onClick={() => {
         // TODO
-        item.isdir
+        item.isDir
           ? navBySearchParam("f", item.uid)
           : nav(`/functions/${item.uid}`, {
               title: item.name,
@@ -134,7 +134,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
       }}
     >
       <div className="ml-2 w-60 lineClamp1">
-        {item.isdir ? <FolderFilled /> : <ApiOutlined />}
+        {item.isDir ? <FolderFilled /> : <ApiOutlined />}
         <span className="ml-2">{item.name}</span>
       </div>
 
@@ -149,11 +149,11 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
         </Popover>
       </div>
       <div className="w-60 lineClamp1">
-        {dayjs(item.created_at).format("YYYY-MM-DD hh:mm:ss")}
+        {dayjs(item.createTime).format("YYYY-MM-DD hh:mm:ss")}
       </div>
 
       <div className="w-60 lineClamp1">
-        {dayjs(item.updated_at).format("YYYY-MM-DD hh:mm:ss")}
+        {dayjs(item.updateTime).format("YYYY-MM-DD hh:mm:ss")}
       </div>
       <div className="w-10 mr-3">
         <StopPropagationDiv>
@@ -181,7 +181,7 @@ export default function FolderItem({ item }: { item: FolderItemType }) {
                   onClick() {
                     createSchemaFormModal({
                       title: "编辑信息",
-                      schema: item.isdir
+                      schema: item.isDir
                         ? ADD_FOLDER_SCHEMA
                         : ADD_FUNCTION_SCHEMA,
                       async onFinished(values) {

@@ -14,10 +14,10 @@ export type FolderItemType = {
   name: string;
   description: string;
   uid: string;
-  parent_uid?: string;
-  isdir: boolean;
-  created_at: number;
-  updated_at: number;
+  parentUid?: string;
+  isDir: boolean;
+  createTime: number;
+  updateTime: number;
   children?: FolderItemType[];
 };
 
@@ -46,15 +46,15 @@ export const FunctionsModel = createCustomModel(function () {
         uid: ROOT_FOLDER_UID,
         name: "根目录",
         description: "根目录",
-        created_at: Date.now(),
-        updated_at: Date.now(),
-        isdir: true,
+        createTime: Date.now(),
+        updateTime: Date.now(),
+        isDir: true,
         children: [],
       };
 
       // 递归构建树形结构
       data.forEach((item) => {
-        const parent = _folderMap[item.parent_uid || ROOT_FOLDER_UID];
+        const parent = _folderMap[item.parentUid || ROOT_FOLDER_UID];
         if (parent) {
           parent.children = parent.children || [];
           parent.children.push(item);
@@ -69,8 +69,8 @@ export const FunctionsModel = createCustomModel(function () {
   const memoFolderList = useCreation(() => {
     const list = folderMap[f]?.children || [];
     // 创建时间排序，还有是否是文件夹排序
-    list.sort((a, b) => b.created_at - a.created_at);
-    return list.sort((a, b) => (a.isdir === b.isdir ? 0 : a.isdir ? -1 : 1));
+    list.sort((a, b) => b.createTime - a.createTime);
+    return list.sort((a, b) => (a.isDir === b.isDir ? 0 : a.isDir ? -1 : 1));
   }, [f, folderMap]);
 
   const { mutateAsync: addFolderItem } = useMutation({
@@ -78,12 +78,13 @@ export const FunctionsModel = createCustomModel(function () {
     mutationFn: async (
       params: Omit<
         Parameters<typeof addCloudFunctionEntityItem>[0],
-        "parent_uid"
+        "parentUid"
       >
     ) => {
       await addCloudFunctionEntityItem({
         ...params,
-        parent_uid: f,
+        parentUid: f,
+        isDir: params.isDir ?? true,
       });
     },
     onSuccess() {
@@ -107,7 +108,7 @@ export const FunctionsModel = createCustomModel(function () {
 
   // 获取父级目录
   const getParentFolder = (uid: string) => {
-    return folderMap[folderMap[uid]?.parent_uid || ROOT_FOLDER_UID];
+    return folderMap[folderMap[uid]?.parentUid || ROOT_FOLDER_UID];
   };
 
   return {

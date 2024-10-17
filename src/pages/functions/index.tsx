@@ -28,10 +28,10 @@ function Functions() {
         title: last.name,
         key: last.uid,
       });
-      if (!last.parent_uid) {
+      if (!last.parentUid) {
         break;
       }
-      fword = last.parent_uid;
+      fword = last.parentUid;
     }
     origin.unshift({
       title: "根目录",

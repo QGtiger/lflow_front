@@ -3,8 +3,8 @@ import { request } from "@/api/request";
 export function addCloudFunctionEntityItem(data: {
   name: string;
   description: string;
-  parent_uid?: string;
-  isdir?: boolean;
+  parentUid?: string;
+  isDir?: boolean;
 }) {
   return request({
     url: "/cloudfunctions",
@@ -23,7 +23,7 @@ export function queryCloudFunctions<T>() {
 export function updateCloudFunction(data: {
   name?: string;
   description?: string;
-  parent_uid?: string;
+  parentUid?: string;
   uid: string;
 }) {
   return request({

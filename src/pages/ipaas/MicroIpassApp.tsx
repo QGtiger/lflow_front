@@ -1,7 +1,7 @@
 import { request } from "@/api/request";
 import { useMount } from "ahooks";
 import { registerMicroApps, start } from "qiankun";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Skeleton } from "antd";
 
 import "./index.css";
@@ -19,6 +19,7 @@ export default function MicroIPaaS() {
           activeRule: "/ipaas",
           props: {
             requestClient: request,
+            parentWindow: window,
           },
         },
       ],
