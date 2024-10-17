@@ -12,7 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
     "@ant-design/pro-components": "^2.7.15",
-    "@lightfish/ipaas-schemaform": "^1.0.1",
+    "@lightfish/ipaas-schemaform": "1.0.1-beta.2",
     "@tanstack/react-query": "^5.52.2",
     "@tanstack/react-query-devtools": "^5.52.2",
     "@vercel/analytics": "^1.3.1",
