@@ -1,4 +1,4 @@
-FROM node:18 AS base
+FROM node:18.0-alpine3.14 AS base
 
 RUN npm install -g pnpm@8.12.1
 
