@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm config set registry https://registry.npmmirror.com/ && pnpm install --frozen-lockfile && pnpm run build
+RUN pnpm install --frozen-lockfile && pnpm run build
 
 # production stage
 FROM nginx:stable AS production-stage
